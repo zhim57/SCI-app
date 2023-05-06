@@ -1,0 +1,177 @@
+<!-- <!DOCTYPE html>
+<html>
+  <head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:100,300" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="./assets/css/materialize.min.css"  media="screen,projection"/>
+    <link rel="stylesheet" href="./assets/css/custom.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Set a pick up</title>
+  </head>
+  <body> -->
+    <%- include('partials/header') %>
+      <div class="row">
+        <div class="row " id="display1-div">
+        </div>
+          
+          <div class="col s10 offset-s7">
+            <a href="">Crew Login   /</a>
+            <a href="driver_view.html">  Driver Login / </a>
+            <a href="dispatcher_view.html">  Dispatcher Login </a>
+            <a class="btn btn-light btn-lg" href="/register" role="button">Register</a>
+            <a class="btn btn-dark btn-lg" href="/login" role="button">Login</a>
+
+            </div>
+            </div>
+              
+              <div class="container">
+          <div class="row">
+              
+              <div class="col s10 offset-s1">
+                  
+                  
+                  
+                  <div id="content" class="m2">
+                      <header id="header" class=" blue darken-1">
+                          Set A Pick Up
+                        </header>
+                        
+                        <form id="email-form" action="#" class="col s10 offset-s1 ">
+                            
+                            <label for="port-select">Choose a port:</label>
+                            <select id="port-select">
+                                <option value="" selected>--Please choose an option--</option>
+                                <option value="Newark">Newark</option>
+                                <option value="Philadelphia">Philadelphia</option>
+                                <option value="Wilmington">Wilmington</option>
+                                <option value="Charleston">Charleston</option>
+                                <option value="Savannah">Savannah</option>
+                                <option value="Miami">Miami</option>
+                            </select>
+                            
+                            <div class="row">
+                                <div class="input-field col s12 text-ja">
+                                    <input id="crew" type="text">
+                                    <label for="crew">Your Name:</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s12 text-ja">
+                                    <input id="email" type="email">
+                                    <label for="email">Your email:</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s12 text-ja">
+                                    <input id="vessel" type="text">
+                                    <label for="vessel">Name of your vessel:</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s12 text-ja">
+                                    <input id="whatsapp-number" type="text">
+                                    <label for="whatsapp-number">Your whatsapp number:</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s12 text-ja">
+                                    <input id="cell-number" type="text">
+                                    <label for="cell-number">Your cell number:</label>
+                                </div>
+                            </div>
+                            <!-- <div class="row">
+                                <div class="input-field col s12">
+                                <textarea id="whatsapp-number" class="materialize-textarea"></textarea>
+                                <label for="message">Mesage</label>
+                                </div>
+                            </div> -->
+                        <label for="pickup-loc-select">Where you to be picked up?:</label>
+                        <select id="pickup-select">
+                            <option value="" selected>Pick Up Location</option>
+                            <option value="Jersey Gardens gate 11 ">Jersey Gardens Gate 11</option>
+                            <option value="APM">APM</option>
+                            <option value="PNCT">PNCT</option>
+                            <option value="Maher">Maher</option>
+                            <option value="Hudson Tank">Hudson Tank</option>
+                            <option value="Berth_4">Berth 04</option>
+                            <option value="Berth_08">Berth 08</option>
+                            <option value="Berth_16">Berth 16</option>
+                            <option value="Berth_17">Berth 17</option>
+                            <option value="Berth_23">Berth 23</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <label for="dropoff-select">Where do you wish to go?:</label>
+                        <select id="dropoff-select">
+                            <option value="" selected>drop off Location</option>
+                            <option value="Jersey Gardens gate 11">Jersey Gardens Gate 11</option>
+                            <option value="apm">APM</option>
+                            <option value="PNCT">PNCT</option>
+                            <option value="Maher">Maher</option>
+                            <option value="Hudson tank">Hudson Tank</option>
+                            <option value="berth_4">berth 04</option>
+                            <option value="berth_08">berth 08</option>
+                            <option value="berth_16">berth 16</option>
+                            <option value="berth_17">berth 17</option>
+                            <option value="berth_23">berth 23</option>
+                            <option value="other">other</option>
+                        </select>
+                        <div class="row">
+                                <div class="input-field col s12">
+                                    <input id="number-crew" type="number">
+                                    <label for="number-crew">Number of people for this pick up?</label>
+                                </div>
+                                </div>
+                        <div class="row">
+                                <div class="input-field col s12">
+                                    <input id="date-ja" type="date">
+                                    <label for="date-ja"></label>
+                                </div>
+                                </div>
+                        <div class="row">
+                                <div class="input-field col s12">
+                                    <input id="time-ja" type="time">
+                                    <label for="time-ja"></label>
+                                </div>
+                                </div>
+                        <div class="row">
+                                <div class="input-field col s12">
+                                        <input id="remarks" type="text">
+                                        <label for="remarks">remarks:</label>
+                                </div>
+                          </div>
+                        <div class="row">
+                                <div class="input-field col s12">
+                                        <input id="verification-code" type="text">
+                                        <label for="verification-code">Your Vessel's verification code (emailed to you):</label>
+                                </div>
+                          </div>
+                            <div class="row" id="loaders">
+                                <img id="spinner" src="./assets/img/spinner.gif" width="150">
+                            </div>
+                            <div class="row">
+                                    <div class="col s6">
+                                        <button id="sendBtn" class="btn waves-effect waves-light  pink darken-2" type="submit" name="action">Send
+                                                <i class="material-icons right">send</i>
+                                        </button>
+                                    </div>
+                                    <div class="col s6">
+                                        <button id="resetBtn" class="btn waves-effect waves-light light-blue darken-2" type="submit">Reset
+                                                <i class="material-icons right">delete</i>
+                                        </button>
+                                    </div>
+                            </div>
+                    
+                    </form> 
+                    
+                </div> <!--.contenido-->
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="./assets/js/materialize.min.js"></script>
+    <script type="module"  src="./assets/js/app.js"></script>
+
+    <%- include('partials/header') %>
+  <!-- </body>
+</html>
+       -->
