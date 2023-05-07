@@ -16,7 +16,7 @@ dotenv.config({ path: "./.env" });
 var app = express();
 mongoose.connect("mongodb://localhost:27017/userDB");
 
-const userSchema = {
+const userSchema = new mongoose.Schema({
   u_email: String,
   u_password: String,
   u_vessel: String,
@@ -28,10 +28,53 @@ const userSchema = {
   date: { type: Date, default: Date.now },
   active: { type: Boolean, default: false },
   outWard: { type: Boolean, default: false },
-  inWard: { type: Boolean, default: false }
-};
+  inWard: { type: Boolean, default: false },
+});
 
 const User = new mongoose.model("User", userSchema);
+
+const pickupSchema = new mongoose.Schema({
+  crew_first_name: String,
+  crew_last_name: String,
+  crew_email: String,
+  port_location: String,
+  crew_whatsApp: String,
+  pickUp: String,
+  crew_cell: String,
+  dropOff: String,
+  numberPass: Number,
+  remarks: String,
+  lastMessageTo: String,
+  reLastMessageFrom: String,
+  verificationCode: String,
+  driver: String,
+  vehicle: String,
+  vehicle_cell: String,
+  dispatcher: String,
+  driverReview: String,
+  passengerReview: String,
+  driverScore: String,
+  passengerScore: String,
+
+  dateJa: { type: Date, default: Date.now },
+  active: { type: Boolean, default: true },
+  cancelled: { type: Boolean, default: false },
+  completed: { type: Boolean, default: false },
+});
+
+const Pickup = new mongoose.model("pickup", pickupSchema);
+
+// Add any other plugins or middleware here. For example, middleware for hashing passwords
+
+
+
+var secret = process.env.SECRET;
+userSchema.plugin(encrypt, { secret: secret });
+
+
+console.log(process.env.SECRET);
+
+
 
 
 
@@ -62,9 +105,6 @@ app.use(
   })
 );
 
-console.log(process.env.SECRET);
-console.log(process.env.API_KEY);
-
 
 // Create all our routes and set up logic within those routes where required.
 
@@ -81,7 +121,7 @@ app.get("/register", function (req, res) {
 app.post("/register", async function (req, res) {
   // console.log(req.body);
   const check = req.body.u_email;
-const newUser = new User ({
+  const newUser = new User({
     u_email: req.body.u_email,
     u_password: req.body.password,
     u_vessel: req.body.u_vessel,
@@ -92,49 +132,34 @@ const newUser = new User ({
     u_whatsApp: req.body.u_whatsApp,
   });
 
-  const foundPreviousUser = await User.find({u_email:check });
-console.log(foundPreviousUser);
+  const foundPreviousUser = await User.find({ u_email: check });
+  console.log(foundPreviousUser);
 
-
-
-if(foundPreviousUser[0] ===undefined){
-
-  // console.log(newUser);
-  const result1  = await newUser.save();
+  if (foundPreviousUser[0] === undefined) {
+    // console.log(newUser);
+    const result1 = await newUser.save();
     console.log(result1);
     res.render("seafarer");
-}
+  } else if (foundPreviousUser[0].u_email === check) {
+    data = {
+      remarks:
+        "Hello " +
+        foundPreviousUser[0].u_first_name +
+        ",  your email is already on file , please log in!",
+      u_email: check,
+      u_first_name: foundPreviousUser[0].u_first_name,
+    };
 
-else if (foundPreviousUser[0].u_email=== check){
-  data = {
-remarks: "Hello "+ foundPreviousUser[0].u_first_name+",  your email is already on file , please log in!" ,
-u_email:check,
-u_first_name: foundPreviousUser[0].u_first_name
-
+    res.render("login", { data: data });
   }
-
-
-  res.render("login" , {data: data});
-}
-
-
-  
-
-
-
 });
-
-
 
 app.post("/login", function (req, res) {
   const username = req.body.username;
   const password = req.body.password;
-loggedUser = {
+  loggedUser = {
     u_email: req.body.username,
-
   };
-
-
 
   user.read4(
     { table: "sci_users", cond: "u_email", u_email: username },
@@ -144,40 +169,27 @@ loggedUser = {
       } else {
         if (foundUser) {
           if (foundUser[0].u_password === password) {
+            loggedUser.id = foundUser[0].id;
+            loggedUser.u_first_name = foundUser[0].u_first_name;
+            loggedUser.u_last_name = foundUser[0].u_last_name;
+            loggedUser.u_whatsApp = foundUser[0].u_whatsApp;
+            loggedUser.u_cell = foundUser[0].u_cell;
+            loggedUser.u_vessel = foundUser[0].u_vessel;
+            loggedUser.u_role = foundUser[0].u_role;
 
-loggedUser.id = foundUser[0].id;
-loggedUser.u_first_name = foundUser[0].u_first_name;
-loggedUser.u_last_name = foundUser[0].u_last_name;
-loggedUser.u_whatsApp = foundUser[0].u_whatsApp;
-loggedUser.u_cell = foundUser[0].u_cell;
-loggedUser.u_vessel = foundUser[0].u_vessel;
-loggedUser.u_role = foundUser[0].u_role;
+            console.log("loggedUser");
+            console.log(loggedUser);
 
-console.log("loggedUser");
-console.log(loggedUser);
-
-if(loggedUser.u_role === "seafarer"){
-
-  res.render("seafarer");
-}
-else if (loggedUser.u_role === "driver"){
-
-  res.render("driver");
-
-}
-
-else if (loggedUser.u_role === "dispatcher"){
-
-  res.render("dispatcher");
-
-}
-else if (loggedUser.u_role === "admin"){
-
-  res.render("dispatcher");
-
-}
-}
-          
+            if (loggedUser.u_role === "seafarer") {
+              res.render("seafarer");
+            } else if (loggedUser.u_role === "driver") {
+              res.render("driver");
+            } else if (loggedUser.u_role === "dispatcher") {
+              res.render("dispatcher");
+            } else if (loggedUser.u_role === "admin") {
+              res.render("dispatcher");
+            }
+          }
         } else {
           console.log("no foundUser ?");
         }
@@ -185,8 +197,6 @@ else if (loggedUser.u_role === "admin"){
     }
   );
 });
-
-
 
 // Start our server so that it can begin listening to client requests.
 app.listen(PORT, function () {
