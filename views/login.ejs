@@ -10,9 +10,11 @@
 
           <!-- Makes POST request to /login route -->
           <form action="/login" method="POST">
+
+            <h6 class="form-group"> <%= data.remarks %>  </h6>
             <div class="form-group">
               <label for="email">Email</label>
-              <input type="email" class="form-control" name="username">
+              <input type="email" value=" <%= data.u_email %>" class="form-control" name="username">
             </div>
             <div class="form-group">
               <label for="password">Password</label>
