@@ -66,18 +66,11 @@ const Pickup = new mongoose.model("pickup", pickupSchema);
 
 // Add any other plugins or middleware here. For example, middleware for hashing passwords
 
-
-
 var secret = process.env.SECRET;
 userSchema.plugin(encrypt, { secret: secret });
 
 
 console.log(process.env.SECRET);
-
-
-
-
-
 
 
 app.set("views", path.join(__dirname, "views"));
