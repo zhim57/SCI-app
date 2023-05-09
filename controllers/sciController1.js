@@ -233,45 +233,7 @@ router.get("/api/questions01/", function (req, res) {
     }
   });
 });
-router.get("/api/questions02/", function (req, res) {
-  // console.log("one question by id req.query:");
-  // console.log(req.query);
 
-  var data = JSON.stringify({
-    messages: [
-      {
-        channel: "sms",
-        recipients: ["+19084720799", "+19084720799"],
-        content: "Greetings from D7 API",
-        msg_type: "text",
-        data_coding: "text",
-      },
-    ],
-    message_globals: {
-      originator: "SignOTP",
-      report_url: "https://the_url_to_recieve_delivery_report.com",
-    },
-  });
-
-  var config = {
-    method: "post",
-    url: "https://api.d7networks.com/messages/v1/send",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization:
-    },
-    data: data,
-  };
-
-  axios(config)
-    .then(function (response) {
-      console.log(JSON.stringify(response.data));
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-});
 
 // Export routes for server.js to use.
 module.exports = router;
