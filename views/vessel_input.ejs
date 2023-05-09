@@ -1,0 +1,50 @@
+<%- include('partials/header') %>
+<div class="container mt-5">
+  <h1>Register a Vessel</h1>
+
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="card">
+        <div class="card-body">
+          <!-- Makes POST request to /register route -->
+          <form action="/vessel_input" method="POST">
+          
+            <div class="form-group">
+              <label for="v-name">Vessel Name</label>
+              <input type="v_name" id="v-name" class="form-control" name="v_name" />
+            </div>
+            <div class="form-group">
+              <label for="v-email">Vessel email</label>
+              <input type="v_email" id="v-email" class="form-control" name="v_email" />
+            </div>
+            <div class="form-group">
+              <label for="v-imo">Vessel Imo</label>
+              <input type="v_imo" id="v-name" class="form-control" name="v_imo" />
+            </div>
+            <div class="form-group">
+              <label for="v_code">Crew verification Code</label>
+              <input type="v_code" id="v_code" class="form-control" name="v_code" />
+            </div>
+           
+      
+
+            <button type="submit" id="v_register_submit" class="btn btn-dark">Register_Vessel</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class="col-sm-4">
+      <div class="card social-block">
+        <div class="card-body">
+          <a class="btn btn-block" href="/auth/google" role="button">
+            <i class="fab fa-google"></i>
+            Sign Up with Google
+          </a>
+        </div>
+      </div>
+    </div> -->
+  </div>
+</div>
+
+<%- include('partials/header') %>
