@@ -38,30 +38,34 @@ router.post("/register1", function (req, res) {});
 
 //create a question
 router.post("/register", function (req, res) {
-  var cols = Object.entries(req.body).map((e) => e[0]);
-  var vals = Object.entries(req.body).map((e) => e[1]);
 
-  currentUser = {
-    u_email: req.body.u_email,
 
-    u_vessel: req.body.u_vessel,
-    u_last_name: req.body.u_last_name,
-    u_first_name: req.body.u_first_name,
-    u_cell: req.body.u_cell,
-    u_role: req.body.u_role,
-    u_whatsApp: req.body.u_whatsApp,
-  };
 
-  console.log(currentUser);
-  user
-    .create(cols, vals)
-    .then((results) => {
-      // res.json({ id: results.insertId });
-      res.render("seafarer", currentUser);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  
+  // var cols = Object.entries(req.body).map((e) => e[0]);
+  // var vals = Object.entries(req.body).map((e) => e[1]);
+
+  // currentUser = {
+  //   u_email: req.body.u_email,
+
+  //   u_vessel: req.body.u_vessel,
+  //   u_last_name: req.body.u_last_name,
+  //   u_first_name: req.body.u_first_name,
+  //   u_cell: req.body.u_cell,
+  //   u_role: req.body.u_role,
+  //   u_whatsApp: req.body.u_whatsApp,
+  // };
+
+  // console.log(currentUser);
+  // user
+  //   .create(cols, vals)
+  //   .then((results) => {
+  //     // res.json({ id: results.insertId });
+  //     res.render("seafarer", currentUser);
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
 });
 
 router.post("/login", function (req, res) {
@@ -256,7 +260,6 @@ router.get("/api/questions02/", function (req, res) {
       "Content-Type": "application/json",
       Accept: "application/json",
       Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhdXRoLWJhY2tlbmQ6YXBwIiwic3ViIjoiNGQzNmFmMTEtZDM2NS00NmNhLTlkYmItN2ZhZGZjOGRmYjFhIn0.nAnOW72ueBse_R-BRvpdfOvusnqcYCmKJnjtSxfqAoo",
     },
     data: data,
   };

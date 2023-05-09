@@ -11,14 +11,14 @@
           <!-- Makes POST request to /login route -->
           <form action="/login" method="POST">
           
-           
+            <h6 class="form-group"> <%= data.remarks %>  </h6>
             <div class="form-group">
               <label for="u_email">Email</label>
-              <input type="email"  id="u_email" class="form-control" name="u_email">
+              <input type="email" value=" <%= data.u_email %>" class="form-control" name="u_email">
             </div>
             <div class="form-group">
               <label for="u_password">Password</label>
-              <input type="password" id="u_password" class="form-control" name="u_password">
+              <input type="password" class="form-control" name="u_password">
             </div>
          
             <button type="submit" class="btn btn-dark">Login</button>

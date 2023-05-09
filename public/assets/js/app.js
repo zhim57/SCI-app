@@ -47,10 +47,11 @@ function eventListeners() {
   dateJa.addEventListener("blur", validateField);
   timeJa.addEventListener("blur", validateField);
   remarks.addEventListener("blur", validateField);
-  verificationCode.addEventListener("blur", validateField);
+  // verificationCode.addEventListener("blur", validateField);
 
   // Send Email & reset button
   // sendEmailForm.addEventListener("submit", sendEmail);
+  // sendBtn.addEventListener("click", sendEmail);
   resetBtn.addEventListener("click", resetForm);
 }
 
@@ -103,22 +104,22 @@ function registerNewUser(e) {
 function sendEmail(e) {
   e.preventDefault();
 
-  // show the spinner
-  const spinner = document.querySelector("#spinner");
-  spinner.style.display = "block";
+  // // show the spinner
+  // const spinner = document.querySelector("#spinner");
+  // spinner.style.display = "block";
 
-  // Show the image
-  const sendEmailImg = document.createElement("img");
-  sendEmailImg.src = "./assets/img/mail.gif";
-  sendEmailImg.style.display = "block";
+  // // Show the image
+  // const sendEmailImg = document.createElement("img");
+  // sendEmailImg.src = "./assets/img/mail.gif";
+  // sendEmailImg.style.display = "block";
 
   // Hide Spinner then show the send Email image
-  setTimeout(function () {
-    // Hide the spinner
-    spinner.style.display = "none";
+  // setTimeout(function () {
+  //   // Hide the spinner
+  //   spinner.style.display = "none";
 
     // Show the image
-    document.querySelector("#loaders").appendChild(sendEmailImg);
+    // document.querySelector("#loaders").appendChild(sendEmailImg);
     let pickUpObject = {
       portSelect: portSelect.value,
       crew: crew.value,
@@ -131,33 +132,36 @@ function sendEmail(e) {
       numberCrew: numberCrew.value,
       dateJa: dateJa.value,
       timeJa: timeJa.value,
-      remarks: remarks.value,
-      verificationCode: verificationCode.value,
+      remarks: remarks.value
+      // verificationCode: verificationCode.value,
     };
 
-    printJob(pickUpObject);
+    // printJob(pickUpObject);
     // save to database
     saveToDataBase(pickUpObject);
-    console.log(pickUpObject);
+    // console.log(pickUpObject);
     // After 5 seconds, hide the image and reset the form
-    setTimeout(function () {
-      sendEmailForm.reset();
-      sendEmailImg.remove();
-    }, 5000);
-  }, 3000);
-}
-// save a new pick up to database 
+    // setTimeout(function () {
+    //   // sendEmailForm.reset();
+    //   sendEmailImg.remove();
+    // }, 2000);
+  // }, 3000);
+}// save a new pick up to database 
 function saveToDataBase(pickUpObject) {
-  let table = "sci_pickups";
-  $.ajax("/api/" + table, {
+
+  $.ajax("/pickup",  {
     type: "POST",
     data: pickUpObject,
-  }).then(function () {
-    console.log("pick up added");
-    console.log("request passed step1");
-  });
-}
-
+     
+    }).then((result ) => {
+      console.log(result);
+     let data1 = {
+       data :result.remarks
+        
+      };
+      // ( "confirmation", { data: data1 })
+    });
+  }
 // Validate the fields
 function validateField() {
   let errors;
