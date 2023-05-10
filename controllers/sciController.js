@@ -25,7 +25,7 @@ const Vessel = db.Vessel;
 // var DL_API_KEY = process.env.DL_API_KEY;
  
 // Create all our routes and set up logic within those routes where required.
-router.get("/home", function (req, res) {
+router.get("/", function (req, res) {
   res.render("home");
 });
 router.get("/login", function (req, res) {
