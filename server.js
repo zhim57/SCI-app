@@ -7,18 +7,12 @@ const session = require("express-session");
 var router = express.Router();
 const ejs = require("ejs");
 const bodyParser = require("body-parser");
+var md5 = require('md5');
 
 var PORT = process.env.PORT || 8082;
 dotenv.config({ path: "./.env" });
 
 var app = express();
-// mongoose.connect("mongodb://localhost:27017/userDB", { useNewUrlParser: true }); //test
-// connection moved to config.json  5-8-2023
-
-// schemas + user/vessel/pickup
-// moved schemas to db.js  5-8-2023
-// end schemas + user/vessel/pickup
-
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
@@ -42,9 +36,6 @@ app.use(
     saveUninitialized: true,
   })
 );
-
-// Create all our routes and set up logic within those routes where required.
-// moved the routes to sci-controller 5-8-2023
 
 // Start our server so that it can begin listening to client requests.
 app.listen(PORT, function () {

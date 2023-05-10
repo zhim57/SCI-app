@@ -1,6 +1,8 @@
 const config = require("../config/config.json");
 const mongoose = require("mongoose");
 const encrypt = require("mongoose-encryption");
+
+
 const connectionOptions = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -28,7 +30,7 @@ const vesselSchema = new mongoose.Schema({
 var secret = process.env.SECRET;
 vesselSchema.plugin(encrypt, {
   secret: secret,
-  encryptedFields: ["v_email", "v_code"],
+  encryptedFields: ["v_email"],
 });
 
 const Vessel = new mongoose.model("Vessel", vesselSchema);
@@ -54,7 +56,7 @@ const userSchema = new mongoose.Schema({
 var secret = process.env.SECRET;
 userSchema.plugin(encrypt, {
   secret: secret,
-  encryptedFields: ["u_password", "u_code"],
+  encryptedFields: ["u_email"]
 });
 
 const User = new mongoose.model("User", userSchema);

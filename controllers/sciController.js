@@ -2,7 +2,6 @@ const dotenv = require("dotenv");
 var request = require("request");
 const https = require("https");
 var express = require("express");
-// const mongoose = require ("mongoose");
 const path = require("path");
 var router = express.Router();
 // var axios = require("axios");
@@ -10,20 +9,18 @@ var router = express.Router();
 var router = express.Router();
 const ejs = require("ejs");
 const bodyParser = require("body-parser");
-// const encrypt = require("mongoose-encryption");
+var md5 = require("md5");
+
 
 var loggedUser;
 
 // const { text } = require("body-parser");
-const db = require('../db/db');
+const db = require("../db/db");
 
 const User = db.User;
 const Pickup = db.Pickup;
 const Vessel = db.Vessel;
-// const Countries = db.Countries;
-// const response = await Countries.find({});
-// var DL_API_KEY = process.env.DL_API_KEY;
- 
+
 // Create all our routes and set up logic within those routes where required.
 router.get("/", function (req, res) {
   res.render("home");
@@ -37,6 +34,9 @@ router.get("/register", function (req, res) {
 router.get("/vessel_input", function (req, res) {
   res.render("vessel_input");
 });
+router.get("/crew_pickups", function (req, res) {
+  res.render("crew_pickups");
+});
 
 router.post("/register", async function (req, res) {
   // console.log(req.body);
@@ -44,7 +44,7 @@ router.post("/register", async function (req, res) {
   const v_imo = req.body.u_vessel_imo;
   const newUser = new User({
     u_email: req.body.u_email,
-    u_password: req.body.u_password,
+    u_password: md5(req.body.u_password),
     u_vessel: req.body.u_vessel,
     u_vessel_imo: req.body.u_vessel_imo,
     u_last_name: req.body.u_last_name,
@@ -52,35 +52,34 @@ router.post("/register", async function (req, res) {
     u_cell: req.body.u_cell,
     u_role: req.body.u_role,
     u_whatsApp: req.body.u_whatsApp,
-    u_code: req.body.u_code,
+    u_code: md5(req.body.u_code),
   });
   const foundPreviousUser = await User.find({ u_email: check });
   const foundVessel = await Vessel.find({ v_imo: v_imo });
 
-
-
-
-  if ((foundPreviousUser[0] === undefined)  && (foundVessel[0].v_code=== newUser.u_code))  {
-  
+  if (
+    foundPreviousUser[0] === undefined &&
+    foundVessel[0].v_code === newUser.u_code
+  ) {
     const result1 = await newUser.save();
-  
+
     data = {
       remarks:
         "Hello " +
-       result1.u_first_name +
+        result1.u_first_name +
         ", thank you for registering , please log in!",
       u_email: check,
       u_first_name: newUser.u_first_name,
     };
     res.render("login1", { data: data });
-  }
- else if ((foundPreviousUser[0] === undefined)  && (foundVessel[0].v_code!= newUser.u_code))  {
-
-
+  } else if (
+    foundPreviousUser[0] === undefined &&
+    foundVessel[0].v_code != newUser.u_code
+  ) {
     data = {
       remarks:
         "Hello " +
-      newUser.u_first_name +
+        newUser.u_first_name +
         ", registration failed, wrong verification code!",
       u_email: check,
       u_first_name: newUser.u_first_name,
@@ -100,38 +99,41 @@ router.post("/register", async function (req, res) {
 });
 router.post("/vessel_input", async function (req, res) {
   // console.log(req.body);
-  const v_name= req.body.v_name;
+  const v_name = req.body.v_name;
   const v_imo = req.body.v_imo;
   const v_code = req.body.v_code;
   const newVessel = new Vessel({
     v_name: req.body.v_name,
     v_imo: req.body.v_imo,
     v_email: req.body.v_email,
-    v_code: req.body.v_code
+    v_code: md5(req.body.v_code),
   });
   const foundVessel = await Vessel.find({ v_imo: v_imo });
 
   console.log(foundVessel);
 
-  if (foundVessel[0]=== undefined ) {
-    
+  if (foundVessel[0] === undefined) {
     const result1 = await newVessel.save();
     console.log(result1);
     data = {
       remarks:
-      "Hello , vessel name :" +result1.v_name + "vessel imo: " +   result1.v_imo + " ver code :   " +   result1.v_code  + 
-      ", thank you for registering this vessel!",
-      
+        "Hello , vessel name :" +
+        result1.v_name +
+        "vessel imo: " +
+        result1.v_imo +
+        " ver code :   " +
+        result1.v_code +
+        ", thank you for registering this vessel!",
     };
     res.render("confirmation", { data: data });
-  } else if (foundVessel[0].v_imo=== v_imo) {
+  } else if (foundVessel[0].v_imo === v_imo) {
     data = {
       remarks:
-      "Hello " +
-      foundVessel[0].v_imo +
-      ",  this imo  is already in database, we ve sent the verification code to the ship's email on record!",
+        "Hello " +
+        foundVessel[0].v_imo +
+        ",  this imo  is already in database, we ve sent the verification code to the ship's email on record!",
       v_imo: foundVessel[0].v_imo,
-      v_name: foundVessel[0].v_name
+      v_name: foundVessel[0].v_name,
     };
     res.render("confirmation", { data: data });
   }
@@ -146,31 +148,28 @@ router.post("/login", async function (req, res) {
 
   const foundPreviousUser = await User.find({ u_email: u_email });
   // console.log(foundPreviousUser);
-  let full_name = foundPreviousUser[0].u_first_name + " "+ foundPreviousUser[0].u_last_name;
+  let full_name =
+    foundPreviousUser[0].u_first_name + " " + foundPreviousUser[0].u_last_name;
 
-   var u_date="";
-   var d = new Date();
-   u_date += +(d.getMonth()+1)+"/"+d.getDate() + "/"+ d.getFullYear()
-
+  var u_date = "";
+  var d = new Date();
+  u_date += +(d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
 
   if (
     foundPreviousUser[0].u_email === loggedUser.u_email &&
     foundPreviousUser[0].u_password === u_password
-
-
-
   ) {
     loggedUser = {
       u_email: foundPreviousUser[0].u_email,
-      u_vessel: foundPreviousUser[0].u_vessel.replace( / /g,"_"),
+      u_vessel: foundPreviousUser[0].u_vessel.replace(/ /g, "_"),
       u_vessel_imo: foundPreviousUser[0].u_vessel_imo,
       u_last_name: foundPreviousUser[0].u_last_name,
       u_first_name: foundPreviousUser[0].u_first_name,
       u_cell: foundPreviousUser[0].u_cell,
       u_role: foundPreviousUser[0].u_role,
       u_whatsApp: foundPreviousUser[0].u_whatsApp,
-      u_full_name : full_name.replace( / /g,"_"),
-      u_date:u_date
+      u_full_name: full_name.replace(/ /g, "_"),
+      u_date: u_date,
     };
 
     if (loggedUser.u_role === "seafarer") {
@@ -188,11 +187,10 @@ router.post("/login", async function (req, res) {
 router.post("/pickup", async function (req, res) {
   // console.log(req.body);
   const newPickup = new Pickup({
-
     crew_full_name: req.body.crew,
     crew_email: req.body.email,
     vessel: req.body.vessel,
-    port_location:req.body.portselect,
+    port_location: req.body.portselect,
     crew_whatsApp: req.body.whatsApp_number,
     pickUp: req.body.pickup_select,
     crew_cell: req.body.cell_number,
@@ -201,30 +199,28 @@ router.post("/pickup", async function (req, res) {
     remarks: req.body.remarks,
     dateJa: req.body.dateJa,
     timeJa: req.body.time_ja,
- });
-
-
+  });
 
   // const foundPreviousPickup = await User.find({ u_email: check });
   const foundPreviousPickUp = await Pickup.find({ timeJa: newPickup.timeJa });
   // console.log(foundPreviousPickUp);
- 
-  if ((foundPreviousPickUp[0] === undefined))  {
-    
+
+  if (foundPreviousPickUp[0] === undefined) {
     const result1 = await newPickup.save();
     // console.log("result1");
     // console.log(result1);
     data = {
       remarks:
-      "Hello " +
-      result1.crew_full_name +
-      ", thank you for Setting  your Pick Up!",
-      
+        "Hello " +
+        result1.crew_full_name +
+        ", thank you for Setting  your Pick Up!",
     };
     res.render("confirmation", { data: data });
-  }
-  else if ((foundPreviousPickUp[0].dateJa === newPickup.dateJa)  && (foundPreviousPickUp[0].timeJa === newPickup.timeJa) && (foundPreviousPickUp[0].pickUp === newPickup.pickUp)) {
-    
+  } else if (
+    foundPreviousPickUp[0].dateJa === newPickup.dateJa &&
+    foundPreviousPickUp[0].timeJa === newPickup.timeJa &&
+    foundPreviousPickUp[0].pickUp === newPickup.pickUp
+  ) {
     // console.log("foundPreviousPickUp");
     // console.log(foundPreviousPickUp);
     // console.log("newPickup");
@@ -233,26 +229,20 @@ router.post("/pickup", async function (req, res) {
     data = {
       remarks:
         "Hello " +
-      newPickup.crew_full_name +
+        newPickup.crew_full_name +
         ", pick up setting failed, there is already a pick up set for this pick up location, date and time!",
-      
     };
-    res.render( "confirmation", { data: data });
-  } else   {
-
+    res.render("confirmation", { data: data });
+  } else {
     const result1 = await newPickup.save();
     // console.log(result1);
     data = {
       remarks:
-      "Hello " +
-      result1.u_full_name +
-      ", thank you for Setting  your Pick Up!",
-      
+        "Hello " +
+        result1.u_full_name +
+        ", thank you for Setting  your Pick Up!",
     };
     res.render("confirmation", { data: data });
-
-
-    
   }
 });
 // Export routes for server.js to use.

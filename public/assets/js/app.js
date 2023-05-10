@@ -1,5 +1,4 @@
 // Variables
-// import { printJob } from "./app1.js";
 var currentUser;
 const sendBtn = document.getElementById("sendBtn"),
   portSelect = document.getElementById("port-select"),
@@ -17,8 +16,7 @@ const sendBtn = document.getElementById("sendBtn"),
   verificationCode = document.getElementById("verification-code"),
   resetBtn = document.getElementById("resetBtn"),
   sendEmailForm = document.getElementById("email-form"),
-  
-  
+  displayPickups = document.getElementById("display-pickups-div"),
   u_whatsApp = document.getElementById("user-whatsApp"),
   u_email = document.getElementById("user-email"),
   u_cell = document.getElementById("user-cell"),
@@ -27,7 +25,7 @@ const sendBtn = document.getElementById("sendBtn"),
   u_vessel = document.getElementById("user-vessel"),
   u_first_name = document.getElementById("user-first-name"),
   u_last_name = document.getElementById("user-last-name");
-  // u_register_submit = document.getElementById("u_register_submit");
+
 // Event Listeners
 
 eventListeners();
@@ -35,18 +33,19 @@ eventListeners();
 function eventListeners() {
   // App Init
   document.addEventListener("DOMContentLoaded", appInit);
-  // u_register_submit.addEventListener("submit", registerNewUser);
+
   const portSelect = document.querySelector("#port-select");
-  portSelect.style.display = "block";
 
   // Validate the forms
-  email.addEventListener("blur", validateField);
-  pickUp.addEventListener("blur", validateField);
-  dropOff.addEventListener("blur", validateField);
-  numberCrew.addEventListener("blur", validateField);
-  dateJa.addEventListener("blur", validateField);
-  timeJa.addEventListener("blur", validateField);
-  remarks.addEventListener("blur", validateField);
+  if (sendBtn){
+    email.addEventListener("blur", validateField);
+    pickUp.addEventListener("blur", validateField);
+    dropOff.addEventListener("blur", validateField);
+    numberCrew.addEventListener("blur", validateField);
+    dateJa.addEventListener("blur", validateField);
+    timeJa.addEventListener("blur", validateField);
+    remarks.addEventListener("blur", validateField);
+  }
   // verificationCode.addEventListener("blur", validateField);
 
   // Send Email & reset button
@@ -59,16 +58,23 @@ function eventListeners() {
 
 // App Initialization
 function appInit() {
+  if (sendBtn){
   // disable the send button on load
   sendBtn.disabled = true;
+  }
 }
-// function registerNewUser1(e) {
-//   e.preventDefault();
-//   console.log("newUser  submitted");
-//   // disable the register button on load
-//   u_register_submit.disabled = true;
-// }
-// register a new  n User
+
+if (portSelect){
+  portSelect.style.display = "block";
+}
+if (displayPickups){
+// show available pickups for this crew-member
+console.log(loggedUser)
+
+
+  console.log("welcome to the pick ups div");
+}
+
 function registerNewUser(e) {
   e.preventDefault();
 
