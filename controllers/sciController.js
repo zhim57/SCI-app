@@ -246,8 +246,7 @@ router.post("/pickup", async function (req, res) {
 
   if (foundPreviousPickUp[0] === undefined) {
     const result1 = await newPickup.save();
-    // console.log("result1");
-    // console.log(result1);
+  
     data = {
       remarks:
         "Hello " +
@@ -260,10 +259,7 @@ router.post("/pickup", async function (req, res) {
     foundPreviousPickUp[0].timeJa === newPickup.timeJa &&
     foundPreviousPickUp[0].pickUp === newPickup.pickUp
   ) {
-    // console.log("foundPreviousPickUp");
-    // console.log(foundPreviousPickUp);
-    // console.log("newPickup");
-    // console.log(newPickup);
+ 
 
     data = {
       remarks:
