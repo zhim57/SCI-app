@@ -37,14 +37,14 @@
                         <!-- <form id="email-form" action="#" class="col s10 offset-s1 "> -->
 
                             <label for="port-select">Choose a port:</label>
-                            <select id="port-select">
-                                <option name="" value="" >--Please choose--</option>
-                                <option name="Newark" value="Newark" selected>Newark</option>
-                                <option name="Philadelphia" value="Philadelphia">Philadelphia</option>
-                                <option  name="Wilmington" value="Wilmington">Wilmington</option>
-                                <option name="Charleston" value="Charleston">Charleston</option>
-                                <option name="Savannah" value="Savannah">Savannah</option>
-                                <option name="Miami" value="Miami">Miami</option>
+                            <select id="port-select" name="portselect">
+                                <option  value="" >--Please choose--</option>
+                                <option  value="Newark" selected>Newark</option>
+                                <option  value="Philadelphia">Philadelphia</option>
+                                <option   value="Wilmington">Wilmington</option>
+                                <option value="Charleston">Charleston</option>
+                                <option  value="Savannah">Savannah</option>
+                                <option value="Miami">Miami</option>
                             </select>
 
                             <div class="row">
@@ -73,13 +73,13 @@
                             </div>
                             <div class="row">
                                 <div class="input-field col s12 text-ja">
-                                    <input id="whatsapp-number" name="whatsApp-number" type="text" value= <%= data.u_whatsApp %> >
+                                    <input id="whatsapp-number" name="whatsApp_number" type="text" value= <%= data.u_whatsApp %> >
                                     <label for="whatsapp-number" >Your whatsapp number:</label>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="input-field col s12 text-ja">
-                                    <input id="cell-number" name="cell-number" type="text" value= <%= data.u_cell %> >
+                                    <input id="cell-number" name="cell_number" type="text" value= <%= data.u_cell %> >
                                     <label for="cell-number" >Your cell number:</label>
                                 </div>
                             </div>
@@ -90,25 +90,25 @@
                                 </div>
                             </div> -->
                             <label for="pickup-select">Where you to be picked up?:</label>
-                            <select id="pickup-select">
+                            <select id="pickup-select" name="pickup_select">
                                 <option value="" selected>Pick Up Location</option>
-                                <option value="Jersey Gardens gate 11 ">Jersey Gardens Gate 11</option>
-                                <option name="APM" value="APM">APM</option>
+                                <option value="Jersey Gardens gate C ">Jersey Gardens Gate C</option>
+                                <option value="APM" >APM</option>
                                 <option value="PNCT">PNCT</option>
                                 <option value="Maher">Maher</option>
                                 <option value="Hudson Tank">Hudson Tank</option>
                                 <option value="Berth_4">Berth 04</option>
                                 <option value="Berth_08">Berth 08</option>
-                                <option name="Berth_16"value="Berth_16">Berth 16</option>
+                                <option value="Berth_16"value="Berth_16">Berth 16</option>
                                 <option value="Berth_17">Berth 17</option>
                                 <option value="Berth_23">Berth 23</option>
                                 <option value="Other">Other</option>
                             </select>
                             <label for="dropoff-select">Where do you wish to go?:</label>
-                            <select id="dropoff-select">
+                            <select id="dropoff-select" name="dropoff_select">
                                 <option value="" selected>drop off Location</option>
-                                <option name="Jersey Gardens gate C" value="Jersey Gardens gate C">Jersey Gardens Gate C</option>
-                                <option name="APM" value="apm">APM</option>
+                                <option value="Jersey Gardens gate C" >Jersey Gardens Gate C</option>
+                                <option value="APM" >APM</option>
                                 <option value="PNCT">PNCT</option>
                                 <option value="Maher">Maher</option>
                                 <option value="Hudson tank">Hudson Tank</option>
@@ -121,25 +121,25 @@
                             </select>
                             <div class="row">
                                 <div class="input-field col s12">
-                                    <input id="number-crew" type="number">
+                                    <input id="number-crew" name="number_crew" type="number">
                                     <label for="number-crew">Number of people for this pick up?</label>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="input-field col s12">
-                                    <input id="date-ja" type="text" value =<%=data.u_date %> >
+                                    <input id="date-ja" name="dateJa"  type="text" value =<%=data.u_date %> >
                                     <label for="date-ja"></label>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="input-field col s12">
-                                    <input id="time-ja" type="time">
+                                    <input id="time-ja" name="time_ja" type="time">
                                     <label for="time-ja"></label>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="input-field col s12">
-                                    <input id="remarks" type="text">
+                                    <input id="remarks" name="remarks" type="text">
                                     <label for="remarks">remarks:</label>
                                 </div>
                             </div>

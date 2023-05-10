@@ -149,7 +149,7 @@ router.post("/login", async function (req, res) {
   };
 
   const foundPreviousUser = await User.find({ u_email: u_email });
-  console.log(foundPreviousUser);
+  // console.log(foundPreviousUser);
   let full_name = foundPreviousUser[0].u_first_name + " "+ foundPreviousUser[0].u_last_name;
 
    var u_date="";
@@ -196,15 +196,15 @@ router.post("/pickup", async function (req, res) {
     crew_full_name: req.body.crew,
     crew_email: req.body.email,
     vessel: req.body.vessel,
-    port_location:req.body.portSelect,
-    crew_whatsApp: req.body.whatsApp,
-    pickUp: req.body.pickUp,
-    crew_cell: req.body.cell,
-    dropOff: req.body.dropOff,
-    numberPass: req.body.numberCrew,
-    remarks: req.body.crew,
+    port_location:req.body.portselect,
+    crew_whatsApp: req.body.whatsApp_number,
+    pickUp: req.body.pickup_select,
+    crew_cell: req.body.cell_number,
+    dropOff: req.body.dropoff_select,
+    numberPass: req.body.number_crew,
+    remarks: req.body.remarks,
     dateJa: req.body.dateJa,
-    timeJa: req.body.timeJa,
+    timeJa: req.body.time_ja,
  });
 
 
@@ -216,8 +216,8 @@ router.post("/pickup", async function (req, res) {
   if ((foundPreviousPickUp[0] === undefined))  {
     
     const result1 = await newPickup.save();
-    console.log("result1");
-    console.log(result1);
+    // console.log("result1");
+    // console.log(result1);
     data = {
       remarks:
       "Hello " +
@@ -227,18 +227,18 @@ router.post("/pickup", async function (req, res) {
     };
     res.render("confirmation", { data: data });
   }
-  else if ((foundPreviousPickUp[0].dateJa === newPickup.dateJa)  && (foundPreviousPickUp[0].timeJa === newPickup.timeJa))  {
+  else if ((foundPreviousPickUp[0].dateJa === newPickup.dateJa)  && (foundPreviousPickUp[0].timeJa === newPickup.timeJa) && (foundPreviousPickUp[0].pickUp === newPickup.pickUp)) {
     
-    console.log("foundPreviousPickUp");
-    console.log(foundPreviousPickUp);
-    console.log("newPickup");
-    console.log(newPickup);
+    // console.log("foundPreviousPickUp");
+    // console.log(foundPreviousPickUp);
+    // console.log("newPickup");
+    // console.log(newPickup);
 
     data = {
       remarks:
         "Hello " +
       newPickup.crew_full_name +
-        ", pick up setting failed, there is already a pick up set for this date and time!",
+        ", pick up setting failed, there is already a pick up set for this pick up location, date and time!",
       
     };
     res.render( "confirmation", { data: data });
