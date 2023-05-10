@@ -4,7 +4,9 @@
   "description": "recipes",
   "main": "server.js",
   "dependencies": {
+    "app": "^0.1.0",
     "axios": "^1.4.0",
+    "bcrypt": "^5.1.0",
     "body-parser": "^1.20.2",
     "dotenv": "^16.0.3",
     "ejs": "^3.1.9",
@@ -32,6 +34,5 @@
   "bugs": {
     "url": "https://github.com/zhim57/SCI-app/issues"
   },
-  "homepage": "https://github.com/zhim57/SCI-app#readme",
-  "devDependencies": {}
+  "homepage": "https://github.com/zhim57/SCI-app#readme"
 }

@@ -10,9 +10,21 @@ var router = express.Router();
 const ejs = require("ejs");
 const bodyParser = require("body-parser");
 var md5 = require("md5");
-
+// const encrypt = require("mongoose-encryption");
+const bcrypt = require("bcrypt");
+const saltRounds = 6;
+const myPlaintextPassword = "s0//P4$$w0rD";
+const someOtherPlaintextPassword = "not_bacon";
 
 var loggedUser;
+
+// // Load hash from your password DB.
+// bcrypt.compare(myPlaintextPassword, hash, function(err, result) {
+//   // result == true
+// });
+// bcrypt.compare(someOtherPlaintextPassword, hash, function(err, result) {
+//   // result == false
+// });
 
 // const { text } = require("body-parser");
 const db = require("../db/db");
@@ -39,63 +51,69 @@ router.get("/crew_pickups", function (req, res) {
 });
 
 router.post("/register", async function (req, res) {
-  // console.log(req.body);
-  const check = req.body.u_email;
-  const v_imo = req.body.u_vessel_imo;
-  const newUser = new User({
-    u_email: req.body.u_email,
-    u_password: md5(req.body.u_password),
-    u_vessel: req.body.u_vessel,
-    u_vessel_imo: req.body.u_vessel_imo,
-    u_last_name: req.body.u_last_name,
-    u_first_name: req.body.u_first_name,
-    u_cell: req.body.u_cell,
-    u_role: req.body.u_role,
-    u_whatsApp: req.body.u_whatsApp,
-    u_code: md5(req.body.u_code),
+  bcrypt.hash(req.body.u_password, saltRounds, async function (err, hash) {
+    // Store hash in your password DB.
+    console.log("hash");
+    console.log(hash);
+
+    // console.log(req.body);
+    const check = req.body.u_email;
+    const v_imo = req.body.u_vessel_imo;
+    const newUser = new User({
+      u_email: req.body.u_email,
+      u_password: hash,
+      u_vessel: req.body.u_vessel,
+      u_vessel_imo: req.body.u_vessel_imo,
+      u_last_name: req.body.u_last_name,
+      u_first_name: req.body.u_first_name,
+      u_cell: req.body.u_cell,
+      u_role: req.body.u_role,
+      u_whatsApp: req.body.u_whatsApp,
+      u_code: md5(req.body.u_code),
+    });
+    const foundPreviousUser = await User.find({ u_email: check });
+    const foundVessel = await Vessel.find({ v_imo: v_imo });
+
+    if (
+      foundPreviousUser[0] === undefined &&
+      foundVessel[0].v_code === newUser.u_code
+    ) {
+      const result1 = await newUser.save();
+
+      data = {
+        remarks:
+          "Hello " +
+          result1.u_first_name +
+          ", thank you for registering , please log in!",
+        u_email: check,
+        u_first_name: newUser.u_first_name,
+      };
+      res.render("login1", { data: data });
+    } else if (
+      foundPreviousUser[0] === undefined &&
+      foundVessel[0].v_code != newUser.u_code
+    ) {
+      data = {
+        remarks:
+          "Hello " +
+          newUser.u_first_name +
+          ", registration failed, wrong verification code!",
+        u_email: check,
+        u_first_name: newUser.u_first_name,
+      };
+      res.render("confirmation", { data: data });
+    } else if (foundPreviousUser[0].u_email === check) {
+      data = {
+        remarks:
+          "Hello " +
+          foundPreviousUser[0].u_first_name +
+          ",  your email is already on file , please log in!",
+        u_email: check,
+        u_first_name: foundPreviousUser[0].u_first_name,
+      };
+      res.render("login1", { data: data });
+    }
   });
-  const foundPreviousUser = await User.find({ u_email: check });
-  const foundVessel = await Vessel.find({ v_imo: v_imo });
-
-  if (
-    foundPreviousUser[0] === undefined &&
-    foundVessel[0].v_code === newUser.u_code
-  ) {
-    const result1 = await newUser.save();
-
-    data = {
-      remarks:
-        "Hello " +
-        result1.u_first_name +
-        ", thank you for registering , please log in!",
-      u_email: check,
-      u_first_name: newUser.u_first_name,
-    };
-    res.render("login1", { data: data });
-  } else if (
-    foundPreviousUser[0] === undefined &&
-    foundVessel[0].v_code != newUser.u_code
-  ) {
-    data = {
-      remarks:
-        "Hello " +
-        newUser.u_first_name +
-        ", registration failed, wrong verification code!",
-      u_email: check,
-      u_first_name: newUser.u_first_name,
-    };
-    res.render("confirmation", { data: data });
-  } else if (foundPreviousUser[0].u_email === check) {
-    data = {
-      remarks:
-        "Hello " +
-        foundPreviousUser[0].u_first_name +
-        ",  your email is already on file , please log in!",
-      u_email: check,
-      u_first_name: foundPreviousUser[0].u_first_name,
-    };
-    res.render("login1", { data: data });
-  }
 });
 router.post("/vessel_input", async function (req, res) {
   // console.log(req.body);
@@ -140,6 +158,7 @@ router.post("/vessel_input", async function (req, res) {
 });
 
 router.post("/login", async function (req, res) {
+
   const u_email = req.body.u_email;
   const u_password = req.body.u_password;
   loggedUser = {
@@ -147,40 +166,60 @@ router.post("/login", async function (req, res) {
   };
 
   const foundPreviousUser = await User.find({ u_email: u_email });
-  // console.log(foundPreviousUser);
-  let full_name =
-    foundPreviousUser[0].u_first_name + " " + foundPreviousUser[0].u_last_name;
 
-  var u_date = "";
-  var d = new Date();
-  u_date += +(d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
+  if (foundPreviousUser[0] != undefined) {
+    let full_name =
+      foundPreviousUser[0].u_first_name +
+      " " +
+      foundPreviousUser[0].u_last_name;
 
-  if (
-    foundPreviousUser[0].u_email === loggedUser.u_email &&
-    foundPreviousUser[0].u_password === u_password
-  ) {
-    loggedUser = {
-      u_email: foundPreviousUser[0].u_email,
-      u_vessel: foundPreviousUser[0].u_vessel.replace(/ /g, "_"),
-      u_vessel_imo: foundPreviousUser[0].u_vessel_imo,
-      u_last_name: foundPreviousUser[0].u_last_name,
-      u_first_name: foundPreviousUser[0].u_first_name,
-      u_cell: foundPreviousUser[0].u_cell,
-      u_role: foundPreviousUser[0].u_role,
-      u_whatsApp: foundPreviousUser[0].u_whatsApp,
-      u_full_name: full_name.replace(/ /g, "_"),
-      u_date: u_date,
-    };
+    var u_date = "";
+    var d = new Date();
+    u_date += +(d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
 
-    if (loggedUser.u_role === "seafarer") {
-      res.render("seafarer", { data: loggedUser });
-    } else if (loggedUser.u_role === "driver") {
-      res.render("driver", { data: loggedUser });
-    } else if (loggedUser.u_role === "dispatcher") {
-      res.render("dispatcher", { data: loggedUser });
-    } else if (loggedUser.u_role === "admin") {
-      res.render("admin", { data: loggedUser });
-    }
+ bcrypt
+      .compare(
+        u_password,
+        foundPreviousUser[0].u_password,
+        function (err, result) {
+        
+         if (result === true) {
+            loggedUser = {
+              u_email: foundPreviousUser[0].u_email,
+              u_vessel: foundPreviousUser[0].u_vessel.replace(/ /g, "_"),
+              u_vessel_imo: foundPreviousUser[0].u_vessel_imo,
+              u_last_name: foundPreviousUser[0].u_last_name,
+              u_first_name: foundPreviousUser[0].u_first_name,
+              u_cell: foundPreviousUser[0].u_cell,
+              u_role: foundPreviousUser[0].u_role,
+              u_whatsApp: foundPreviousUser[0].u_whatsApp,
+              u_full_name: full_name.replace(/ /g, "_"),
+              u_date: u_date,
+            };
+  
+            if (loggedUser.u_role === "seafarer") {
+              res.render("seafarer", { data: loggedUser });
+            } else if (loggedUser.u_role === "driver") {
+              res.render("driver", { data: loggedUser });
+            } else if (loggedUser.u_role === "dispatcher") {
+              res.render("dispatcher", { data: loggedUser });
+            } else if (loggedUser.u_role === "admin") {
+              res.render("admin", { data: loggedUser });
+            }
+          } else if (
+            foundPreviousUser[0].u_email === loggedUser.u_email &&
+            foundPreviousUser[0].u_password != u_password
+          ) {
+            console.log("sorry, wrong password entered...");
+          }
+        });
+     
+      
+      
+  } else if (foundPreviousUser[0] === undefined) {
+    console.log("no such user , please register first");
+    res.render("register");
+    // console.log ( foundPreviousUser[0] );
   }
 });
 

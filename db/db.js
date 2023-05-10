@@ -2,6 +2,8 @@ const config = require("../config/config.json");
 const mongoose = require("mongoose");
 const encrypt = require("mongoose-encryption");
 
+// const decrypt = require("mongoose-encryption");
+// const { encrypt, decrypt } = require('./sipher');
 
 const connectionOptions = {
   useNewUrlParser: true,
@@ -36,7 +38,7 @@ vesselSchema.plugin(encrypt, {
 const Vessel = new mongoose.model("Vessel", vesselSchema);
 
 const userSchema = new mongoose.Schema({
-  u_email: String,
+  u_email: String, 
   u_password: String,
   u_vessel: String,
   u_vessel_imo: String,
@@ -54,12 +56,12 @@ const userSchema = new mongoose.Schema({
 
 // Add any other plugins or middleware here. For example, middleware for hashing passwords
 var secret = process.env.SECRET;
-userSchema.plugin(encrypt, {
+userSchema.plugin(encrypt ,{
   secret: secret,
-  encryptedFields: ["u_email"]
+  encryptedFields: []
 });
 
-const User = new mongoose.model("User", userSchema);
+const User = new mongoose.model("User", userSchema,);
 
 const pickupSchema = new mongoose.Schema({
   crew_full_name: String,
