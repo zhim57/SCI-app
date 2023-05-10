@@ -59,15 +59,11 @@ router.post("/register", async function (req, res) {
 
 
 
-  // console.log(newUser);
-  // console.log(foundVessel);
-  // console.log(foundPreviousUser[0]);
 
-  // console.log("checked1");
   if ((foundPreviousUser[0] === undefined)  && (foundVessel[0].v_code=== newUser.u_code))  {
-  // console.log("checked");
+  
     const result1 = await newUser.save();
-    // console.log(result1);
+  
     data = {
       remarks:
         "Hello " +
