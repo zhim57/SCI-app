@@ -221,7 +221,7 @@ router.post("/pickup", async function (req, res) {
     data = {
       remarks:
       "Hello " +
-      result1.u_full_name +
+      result1.crew_full_name +
       ", thank you for Setting  your Pick Up!",
       
     };
