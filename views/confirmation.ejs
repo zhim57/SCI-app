@@ -9,14 +9,17 @@
         <div class="card-body">
 
           <!-- Makes POST request to /login route -->
-          <form action="" method="POST">
+          <form action="/crew-pickups"  method="POST">
 
             <h6 class="form-group"> <%= data.remarks %>  </h6>
-            <div class="form-group">
+            
+            <input id="crew1" name="crew1" type="text" value= <%= data.pickup.crew_email %> > 
              
               <!-- <a href="/crew_pickup">  Your Pickups / </a> -->
             <!-- <button type="submit" class="btn btn-dark">Login</button> -->
-            <div type="link" ><a href="/crew_pickups" class="btn btn-light">  Your Pickups </a></div>
+            <button id="sendBtn" class="btn waves-effect waves-light  pink darken-2"
+            type="submit" name="action">list of Pick ups
+            <!-- <div type="submit" name="action" ><a type="submit" name="action" class="btn btn-light">  Your Pickups </a></div> -->
           </form>
 
         </div>

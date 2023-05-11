@@ -32,8 +32,8 @@
                             Set Your Pick Up
                         </header>
 
-                        <form action="/pickup" method="POST">
-                        <!-- <form id="email-form"  class="col s10 offset-s1 "> -->
+                        <!-- <form action="/pickup" method="POST"> -->
+                        <form id="email-form" action="/pickup" method="POST"  class="col s10 offset-s1 ">
                         <!-- <form id="email-form" action="#" class="col s10 offset-s1 "> -->
 
                             <label for="port-select">Choose a port:</label>
@@ -55,7 +55,7 @@
                             </div>
                             <div class="row">
                                 <div class="input-field col s12 text-ja">
-                                    <input id="email" autocomplete="on"  value= <%= data.u_email %> type="email" name="email"> 
+                                    <input id="email" autocomplete="on"  value= <%= data.username %> type="email" name="email"> 
                                     <label for="email">Your email:</label>
                                 </div>
                             </div>
@@ -151,13 +151,13 @@
                                 <div class="col s6">
                                     <button id="sendBtn" class="btn waves-effect waves-light  pink darken-2"
                                         type="submit" name="action">Send
-                                        <i class="material-icons right">send</i>
+                                        <!-- <i class="material-icons right">send</i> -->
                                     </button>
                                 </div>
                                 <div class="col s6">
                                     <button id="resetBtn" class="btn waves-effect waves-light light-blue darken-2"
                                         type="submit">Reset
-                                        <i class="material-icons right">delete</i>
+                                        <!-- <i class="material-icons right">delete</i> -->
                                     </button>
                                 </div>
                             </div>

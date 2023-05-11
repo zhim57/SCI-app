@@ -1,17 +1,17 @@
+const dotenv = require("dotenv");
 const config = require("../config/config.json");
 const mongoose = require("mongoose");
-const encrypt = require("mongoose-encryption");
-
-// const decrypt = require("mongoose-encryption");
-// const { encrypt, decrypt } = require('./sipher');
+var passport = require("passport");
+const passportLocalMongoose = require("passport-local-mongoose");
+const path = require("path");
+dotenv.config({ path: "./.env" });
 
 const connectionOptions = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useNewUrlParser: true,
+  useNewUrlParser: true
 };
+
 mongoose.connect(
-  process.env.MONGODB_URI || config.connectionString,
+  process.env.MONGODB_URI, //|| config.connectionString,
   connectionOptions
 );
 mongoose.Promise = global.Promise;
@@ -21,47 +21,44 @@ const vesselSchema = new mongoose.Schema({
   v_email: String,
   v_imo: String,
   v_code: String,
-
   date: { type: Date, default: Date.now },
   active: { type: Boolean, default: false },
   outWard: { type: Boolean, default: false },
   inWard: { type: Boolean, default: false },
 });
 
-// Add any other plugins or middleware here. For example, middleware for hashing passwords
-var secret = process.env.SECRET;
-vesselSchema.plugin(encrypt, {
-  secret: secret,
-  encryptedFields: ["v_email"],
-});
 
 const Vessel = new mongoose.model("Vessel", vesselSchema);
 
 const userSchema = new mongoose.Schema({
-  u_email: String, 
-  u_password: String,
-  u_vessel: String,
-  u_vessel_imo: String,
-  u_last_name: String,
-  u_first_name: String,
+  username: {type: String, unique: true, required:true}, 
+  password: String,
+  u_full_name: String,
+  u_vessel: {type: String,  required:true},
+  u_vessel_imo: {type: String,  required:true},
+  u_last_name: {type: String,  required:true},
+  u_first_name: {type: String,  required:true},
   u_cell: String,
-  u_role: String,
+  u_role: {type: String,  required:true},
   u_whatsApp: String,
-  u_code: String,
+  u_code: {type: String,  required:true},
   date: { type: Date, default: Date.now },
   active: { type: Boolean, default: false },
   outWard: { type: Boolean, default: false },
   inWard: { type: Boolean, default: false },
 });
 
+userSchema.plugin(passportLocalMongoose);
 // Add any other plugins or middleware here. For example, middleware for hashing passwords
-var secret = process.env.SECRET;
-userSchema.plugin(encrypt ,{
-  secret: secret,
-  encryptedFields: []
-});
 
-const User = new mongoose.model("User", userSchema,);
+
+const User = new mongoose.model("User", userSchema);
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+// const LocalStrategy = require("passport-local").Strategy;
+// passport.use(new LocalStrategy(User.authenticate()));
+
 
 const pickupSchema = new mongoose.Schema({
   crew_full_name: String,
@@ -97,6 +94,5 @@ const Pickup = new mongoose.model("Pickup", pickupSchema);
 module.exports = {
   Pickup,
   User,
-  Vessel,
-  // Countries: require('./models/countries.model'),
-};
+  Vessel
+ };

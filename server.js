@@ -1,13 +1,20 @@
 const dotenv = require("dotenv");
-var request = require("request");
 var mongoose = require("mongoose");
 var express = require("express");
 const path = require("path");
-const session = require("express-session");
-var router = express.Router();
+// var router = express.Router();
 const ejs = require("ejs");
 const bodyParser = require("body-parser");
-var md5 = require('md5');
+// var md5 = require('md5');
+const session = require("express-session");
+var passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+const db = require("./db/db");
+const User = db.User;
+
+
+
+
 
 var PORT = process.env.PORT || 8082;
 dotenv.config({ path: "./.env" });
@@ -27,15 +34,27 @@ app.use(express.json());
 
 // Import routes and give the server access to them.
 var routes = require("./controllers/sciController.js");
-app.use(routes);
 
+
+//initialize session
 app.use(
   session({
-    secret: "nodejs",
-    resave: true,
-    saveUninitialized: true,
-  })
-);
+    secret: process.env.SECRET,
+    resave: false,
+    saveUninitialized: false
+    
+  }));
+// app.use(passport.initialize());
+// app.use(passport.session());
+// passport.use(new LocalStrategy(User.authenticate()));
+// passport.serializeUser(User.serializeUser());
+// passport.deserializeUser(User.deserializeUser());
+
+
+
+
+
+app.use(routes);
 
 // Start our server so that it can begin listening to client requests.
 app.listen(PORT, function () {
