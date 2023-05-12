@@ -10,6 +10,7 @@ var loggedUser;
 // const path = require("path");
 dotenv.config({ path: "./.env" });
 const db = require("../db/db");
+var GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
 
 const User = db.User;
 // const User = ("./models/user.js")
