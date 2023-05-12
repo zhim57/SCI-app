@@ -10,7 +10,10 @@ var loggedUser;
 // const path = require("path");
 dotenv.config({ path: "./.env" });
 const db = require("../db/db");
-var GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
+const GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
+
+
+
 
 const User = db.User;
 // const User = ("./models/user.js")
@@ -31,7 +34,19 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+passport.use(new GoogleStrategy({
+  clientID:     process.env.CLIENT_ID,
+  clientSecret: process.env.CLIENT_SECRET,
+  callbackURL: "http://localhost:8082/auth/google/home",
+  passReqToCallback   : true
 
+},
+function(request, accessToken, refreshToken, profile, done) {
+  User.findOrCreate({ googleId: profile.id }, function (err, user) {
+    return done(err, user);
+  });
+}
+));
 
 
 
