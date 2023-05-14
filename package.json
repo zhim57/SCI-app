@@ -16,6 +16,7 @@
     "md5": "^2.3.0",
     "mongoose": "^7.1.0",
     "mongoose-encryption": "^2.1.2",
+    "mongoose-findorcreate": "^4.0.0",
     "mysql": "^2.18.1",
     "mysql-aes": "^0.1.0",
     "node": "^20.1.0",

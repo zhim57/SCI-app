@@ -48,3 +48,7 @@ nav,
 section {
   display: block;
 }
+
+#logoutBtn1{
+    float : right;
+}

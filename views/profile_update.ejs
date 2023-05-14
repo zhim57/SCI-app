@@ -1,0 +1,88 @@
+<%- include('partials/header') %>
+<div class="container mt-5">
+  <h1>Update profile</h1>
+
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="card">
+        <div class="card-body">
+          <!-- Makes POST request to /register route -->
+          <form action="/update_profile" method="POST">
+          
+            <div class="form-group">
+              <label for="user-email">Email/Username</label>
+              <input type="email" id="user-email" value= <%= data.username %> class="form-control" name="u_email" />
+            </div>
+            <div class="form-group">
+              <label for="user-rank">current rank</label>
+              <input type="text" id="user-rank"class="form-control" value= <%= data.u_rank %> name="u_rank" />
+            </div>
+            <div class="form-group">
+              <label for="user-vessel">Current Vessel</label>
+              <input type="text" id="user-vessel"class="form-control" value= <%= data.u_vessel %> name="u_vessel" />
+            </div>
+            <div class="form-group">
+              <label for="user-vessel_imo">imo number</label>
+              <input type="text" id="user-vessel_imo"class="form-control" value= <%= data.u_vessel_imo %> name="u_vessel_imo" />
+            </div>
+            <div class="form-group">
+              <label for="user-whatsApp">Your whatsApp number</label>
+              <input type="text" id="user-whatsApp"class="form-control" value= <%= data.u_whatsApp %> name="u_whatsApp" />
+            </div>
+            <div class="form-group">
+              <label for="user-cell">Your cell number</label>
+              <input type="text" id="user-cell"class="form-control" value= <%= data.u_cell %> name="u_cell" />
+            </div>
+            <div class="form-group">
+              <label for="user-first-name">Your First Name</label>
+              <input type="text" id="user-first-name"class="form-control" value= <%= data.u_first_name %> name="u_first_name" />
+            </div>
+            <div class="form-group">
+              <label for="user-last-name">Your Last Name</label>
+              <input type="text" id="user-last-name"class="form-control" value= <%= data.u_last_name %> name="u_last_name" />
+            </div>
+            <div class="form-group">
+              <label for="u_role">Your Role - default is seafarer </label>
+              <input type="text" id="u_role"class="form-control" value= <%= data.u_role %> name="u_role" value="seafarer" />
+            </div>
+            <div class="form-group">
+              <label for="u_code">"Please type here your 7 digit vessel's verification code as received on vessel's email or on paper at the gangway in Newark berths!"</label>
+              <input type="text" id="u_code"class="form-control" value= <%= data.u_code %> name="u_code" />
+            </div>
+            <p>The information you enter above will be used for pick up requests only and will not be shared with anyone.</p>
+            <p>In case of problems please email us at: profiles(at)amicusshippingllc.com</p>
+           <p>Profile completed: </p>
+           <p>User verified: </p>
+           
+           
+           
+           <!-- <div class="form-group">
+              <label for="u_role">Sellect a role for this User:</label>
+              <select id="u_role">
+                <option value="crew_member" selected>crew member</option>
+                <option value="driver">driver</option>
+                <option value="dispatcher">dispatcher</option>
+                <option value="admin">admin</option>
+              </select>
+            </div> -->
+
+            <button type="submit" id="update_profile" class="btn btn-dark">Update Profile</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class="col-sm-4">
+      <div class="card social-block">
+        <div class="card-body">
+          <a class="btn " href="/auth/google" role="button">
+            <i class="fab fa-google"></i>
+            Sign Up with Google
+          </a>
+        </div>
+      </div>
+    </div> -->
+  </div>
+</div>
+
+<%- include('partials/header') %>

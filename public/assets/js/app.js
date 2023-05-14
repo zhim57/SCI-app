@@ -25,12 +25,14 @@ const sendBtn = document.getElementById("sendBtn"),
   u_vessel = document.getElementById("user-vessel"),
   u_first_name = document.getElementById("user-first-name"),
   u_last_name = document.getElementById("user-last-name");
+ 
 
 // Event Listeners
 
 eventListeners();
 
 function eventListeners() {
+  console.log("eventlisteners run");
   // App Init
   document.addEventListener("DOMContentLoaded", appInit);
 
@@ -45,35 +47,40 @@ function eventListeners() {
     dateJa.addEventListener("blur", validateField);
     timeJa.addEventListener("blur", validateField);
     remarks.addEventListener("blur", validateField);
+    resetBtn.addEventListener("click", resetForm);
   }
   // verificationCode.addEventListener("blur", validateField);
 
   // Send Email & reset button
   // sendEmailForm.addEventListener("submit", sendEmail);
   // sendBtn.addEventListener("click", sendEmail);
-  resetBtn.addEventListener("click", resetForm);
 }
 
 // Functions
 
 // App Initialization
 function appInit() {
+
+  console.log("apinit run");
+
   if (sendBtn){
   // disable the send button on load
   sendBtn.disabled = true;
   }
+
+  if (portSelect){
+    portSelect.style.display = "block";
+  }
+  if (displayPickups){
+  // show available pickups for this crew-member
+  console.log(user)
+  
+  
+    console.log("welcome to the pick ups div");
+  }
+
 }
 
-if (portSelect){
-  portSelect.style.display = "block";
-}
-if (displayPickups){
-// show available pickups for this crew-member
-console.log(loggedUser)
-
-
-  console.log("welcome to the pick ups div");
-}
 
 function registerNewUser(e) {
   e.preventDefault();
