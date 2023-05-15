@@ -94,7 +94,7 @@ console.log(user);
 }).then(function (pickups)  {
   console.log(user);
 
-   res.jason(pickups);
+   res.json(pickups);
 })
 
   // console.log(req.user);
