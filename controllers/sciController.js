@@ -2,20 +2,18 @@ const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
 var express = require("express");
 var router = express.Router();
-// const bodyParser = require("body-parser");
 var md5 = require("md5");
 const session = require("express-session");
 var passport = require("passport");
-var loggedUser;
-// const path = require("path");
 dotenv.config({ path: "./.env" });
 const db = require("../db/db");
 const GoogleStrategy = require("passport-google-oauth2").Strategy;
+var loggedUser;
 
 const User = db.User;
-// const User = ("./models/user.js")
+
 const LocalStrategy = require("passport-local").Strategy;
-// passport.use(new LocalStrategy(User.authenticate()));
+
 
 secretkey = process.env.SECRET;
 router.use(
@@ -28,8 +26,7 @@ router.use(
 router.use(passport.initialize());
 router.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
-// passport.serializeUser(User.serializeUser());
-// passport.deserializeUser(User.deserializeUser());
+
 
 // used to serialize the user for the session
 passport.serializeUser(function (user, done) {
@@ -49,11 +46,10 @@ passport.use(
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
       callbackURL: process.env.CALL_BACK_URL,
-    
       passReqToCallback: true,
     },
     function (request, accessToken, refreshToken, profile, done) {
-      // console.log(profile);
+       
       User.findOrCreate({ googleId: profile.id }, function (err, user) {
         return done(err, user);
       });
@@ -72,10 +68,10 @@ router.get("/login", function (req, res) {
   res.render("login");
 });
 router.get("/logout", function (req, res) {
-  req.logout(req, function(cb){
-console.log("logged out");
-console.log(req);
-  })
+  req.logout(req, function (cb) {
+    console.log("logged out");
+    console.log(req);
+  });
   res.redirect("/");
 });
 router.get("/register", function (req, res) {
@@ -85,31 +81,21 @@ router.get("/vessel_input", function (req, res) {
   res.render("vessel_input");
 });
 router.get("/crew_pickups", async function (req, res) {
-  console.log(req.user);
-  let userId = req.user.id;
-  let pickups
 
-let user = await User.find({_id: userId}).then(async function(user) {
-console.log(user);
-   pickups = await Pickup.find({crew_email: user.username} ) 
-}).then(function (pickups)  {
-  console.log(pickups);
 
-   res.json(pickups);
-})
+  let pickups = await Pickup.find({ crew_email: loggedUser.username }).then((pickups1) =>{
 
-  // console.log(req.user);
-  // console.log("userId");
-  // console.log(userId);
-  // console.log(userId);
-  // res.render("crew_pickups", {data: userId});
+res.send( pickups1);
+    
+
+  });
+
+      
+  
 });
 router.get("/seafarer", function (req, res) {
-  if (req.isAuthenticated()) {
-    let data = 1; //needto insert users data here
-
-    // let data = JSON.parse(req.query.valid);
-    res.render("seafarer", { data: data });
+  if (req.isAuthenticated()) { 
+    res.render("seafarer", {data:loggedUser});
   } else {
     res.redirect("/login");
   }
@@ -119,17 +105,13 @@ router.get("/driver", function (req, res) {
     res.render("driver");
   } else {
     console.log("something is wrong ");
-    // res.redirect("/login");
+    res.redirect("/login");
   }
 });
 router.get("/home1", async function (req, res) {
-
-  let user= await User.findById(req.user.id);
-console.log(user);
-
-let data = user
-
-  res.render("profile_update",{data:data});
+  let user = await User.findById(req.user.id);
+  let data = user;
+  res.render("profile_update", { data: data });
 });
 
 router.get(
@@ -140,8 +122,7 @@ router.get(
   "/auth/google/home1",
   passport.authenticate("google", { failureredirect: "/login" }),
   function (req, res) {
-    console.log("authenticated1");
-    res.redirect("/home1");
+     res.redirect("/home1");
   }
 );
 router.post("/register", function (req, res) {
@@ -210,8 +191,8 @@ router.post("/update_profile", async function (req, res) {
   var u_date = "";
   var d = new Date();
   u_date += +(d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
-var id = req.user.id;
-console.log (id);
+  var id = req.user.id;
+  
   const updateUser = {
     username: req.body.u_email,
     u_full_name: full_name.replace(/ /g, "_"),
@@ -227,18 +208,15 @@ console.log (id);
     u_code: req.body.u_code,
   };
 
+  const filter = { _id: id };
+  const update = updateUser;
 
+  // `doc` is the document _before_ `update` was applied
+  let doc = await User.findOneAndUpdate(filter, update, {
+    new: true,
+  });
 
-  const filter = {_id: id };
-const update = updateUser;
-
-// `doc` is the document _before_ `update` was applied
-let doc = await User.findOneAndUpdate(filter, update,{
-  new: true});
-
-  let loggedUser ={
-
-
+  loggedUser = {
     u_cell: doc.u_cell,
     u_code: doc.u_code,
     u_first_name: doc.u_first_name,
@@ -249,14 +227,11 @@ let doc = await User.findOneAndUpdate(filter, update,{
     u_vessel: doc.u_vessel,
     u_vessel_imo: doc.u_vessel_imo,
     u_whatsApp: doc.u_whatsApp,
-    username: doc.username
-
-
-
-  }
+    username: doc.username,
+  };
 
   if (loggedUser.u_role === "seafarer") {
-    res.render("crew_pickups", { data: loggedUser });
+    res.render("crew_pickups", { data: loggedUser }); //, { data: loggedUser }
   } else if (loggedUser.u_role === "driver") {
     res.render("driver", { data: loggedUser });
   } else if (loggedUser.u_role === "dispatcher") {
@@ -264,82 +239,10 @@ let doc = await User.findOneAndUpdate(filter, update,{
   } else if (loggedUser.u_role === "admin") {
     res.render("admin", { data: loggedUser });
   }
- 
-
-  
 });
 
-//   User.register(
-//     { username: req.body.u_email },
-//     req.body.u_password,
-//     function (err, user) {
-//       if (err) {
-//         console.log(err);
-//         res.redirect("/register");
-//         // , { data: newUser}
-//       } else {
-//         passport.authenticate("local")(req, res, function () {
-//           console.log("success1");
-//           console.log(user);
-//           res.redirect("/seafarer");
-//         });
-
-//         console.log("user");
-//         console.log(user);
-//       }
-//     }
-//   );
-// });
-
-// // console.log(req.body);
-// const check = req.body.u_email;
-// const v_imo = req.body.u_vessel_imo;
-
-// const foundPreviousUser = await User.find({ u_email: check });
-// const foundVessel = await Vessel.find({ v_imo: v_imo });
-
-// if (
-//   foundPreviousUser[0] === undefined &&
-//   foundVessel[0].v_code === newUser.u_code
-// ) {
-//   const result1 = await newUser.save();
-
-//   data = {
-//     remarks:
-//       "Hello " +
-//       result1.u_first_name +
-//       ", thank you for registering , please log in!",
-//     u_email: check,
-//     u_first_name: newUser.u_first_name,
-//   };
-//   res.render("login1", { data: data });
-// } else if (
-//   foundPreviousUser[0] === undefined &&
-//   foundVessel[0].v_code != newUser.u_code
-// ) {
-//   data = {
-//     remarks:
-//       "Hello " +
-//       newUser.u_first_name +
-//       ", registration failed, wrong verification code!",
-//     u_email: check,
-//     u_first_name: newUser.u_first_name,
-//   };
-//   res.render("confirmation", { data: data });
-// } else if (foundPreviousUser[0].u_email === check) {
-//   data = {
-//     remarks:
-//       "Hello " +
-//       foundPreviousUser[0].u_first_name +
-//       ",  your email is already on file , please log in!",
-//     u_email: check,
-//     u_first_name: foundPreviousUser[0].u_first_name,
-//   };
-//   res.render("login1", { data: data });
-// }
 
 router.post("/vessel_input", async function (req, res) {
-  // console.log(req.body);
   const v_name = req.body.v_name;
   const v_imo = req.body.v_imo;
   const v_code = req.body.v_code;
@@ -381,12 +284,12 @@ router.post("/vessel_input", async function (req, res) {
 });
 
 router.post("/crew-pickups", async function (req, res) {
-  // console.log(req.body);
-  // console.log("pick ups pressed");
+
   const foundPickups = await Pickup.find({ crew_email: req.body.crew1 });
   if (foundPickups[0] != undefined) {
     console.log(foundPickups);
-    res.json(foundPickups);
+
+    res.render("crew_pickups", {data: loggedUser});
   }
 });
 
@@ -425,9 +328,7 @@ router.post("/login", function (req, res) {
 
         const foundPreviousUser = await User.find({ username: username });
         if (foundPreviousUser[0] != undefined) {
-          // console.log("user found");
-          // console.log(foundPreviousUser);
-
+  
           var u_date = "";
           var d = new Date();
           u_date +=
@@ -461,9 +362,7 @@ router.post("/login", function (req, res) {
     }
   });
 
-  // loggedUser = {
-  //   u_email: req.body.u_email,
-  // };
+ 
 
   function hide() {
     if (result === true) {
@@ -473,14 +372,12 @@ router.post("/login", function (req, res) {
     ) {
       console.log("sorry, wrong password entered...");
     }
-    // } else if (foundPreviousUser[0] === undefined) {
-    //   console.log("no such user , please register first");
-    //   res.render("register");
+
   }
 });
 
 router.post("/pickup", async function (req, res) {
-  // console.log(req.body);
+
   const newPickup = new Pickup({
     crew_full_name: req.body.crew,
     crew_email: req.body.email,
@@ -496,13 +393,11 @@ router.post("/pickup", async function (req, res) {
     timeJa: req.body.time_ja,
   });
 
-  // const foundPreviousPickup = await User.find({ u_email: check });
   const foundPreviousPickUp = await Pickup.find({ timeJa: newPickup.timeJa });
-  // console.log(foundPreviousPickUp);
 
   if (foundPreviousPickUp[0] === undefined) {
     const result1 = await newPickup.save();
-    // console.log (result1);
+  
     data = {
       remarks:
         "Hello " +

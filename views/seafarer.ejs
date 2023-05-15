@@ -25,7 +25,7 @@
 
         <div class="container">
             <div class="row">
-
+                <div value=" <%= data.username %>" id="current-user-box"></div>
                 <div class="col s10 offset-s1">
                     <div id="content" class="m2">
                         <header id="header" class=" blue darken-1">
@@ -102,6 +102,7 @@
                                 <option value="Berth_16"value="Berth_16">Berth 16</option>
                                 <option value="Berth_17">Berth 17</option>
                                 <option value="Berth_23">Berth 23</option>
+                                <option value="Seaman's Center">Seaman's Center</option>
                                 <option value="Other">Other</option>
                             </select>
                             <label for="dropoff-select">Where do you wish to go?:</label>
@@ -111,6 +112,7 @@
                                 <option value="APM" >APM</option>
                                 <option value="PNCT">PNCT</option>
                                 <option value="Maher">Maher</option>
+                                <option value="Seaman's Center">Seaman's Center</option>
                                 <option value="Hudson tank">Hudson Tank</option>
                                 <option value="berth_4">berth 04</option>
                                 <option value="berth_08">berth 08</option>
@@ -127,7 +129,7 @@
                             </div>
                             <div class="row">
                                 <div class="input-field col s12">
-                                    <input id="date-ja" name="dateJa"  type="text" value =<%=data.u_date %> >
+                                    <input id="date-ja" name="dateJa"  type="text" value =<%= data.u_date %> >
                                     <label for="date-ja"></label>
                                 </div>
                             </div>

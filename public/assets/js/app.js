@@ -1,5 +1,5 @@
 // Variables
-var currentUser;
+var currentUser = {};
 const sendBtn = document.getElementById("sendBtn"),
   portSelect = document.getElementById("port-select"),
   crew = document.getElementById("crew"),
@@ -16,7 +16,7 @@ const sendBtn = document.getElementById("sendBtn"),
   verificationCode = document.getElementById("verification-code"),
   resetBtn = document.getElementById("resetBtn"),
   sendEmailForm = document.getElementById("email-form"),
-  displayPickups = document.getElementById("display-pickups-div"),
+  displayPickups = document.getElementById("display-pickups-ul"),
   u_whatsApp = document.getElementById("user-whatsApp"),
   u_email = document.getElementById("user-email"),
   u_cell = document.getElementById("user-cell"),
@@ -24,8 +24,8 @@ const sendBtn = document.getElementById("sendBtn"),
   u_password = document.getElementById("user-password"),
   u_vessel = document.getElementById("user-vessel"),
   u_first_name = document.getElementById("user-first-name"),
-  u_last_name = document.getElementById("user-last-name");
- 
+  u_last_name = document.getElementById("user-last-name"),
+  currentUserBox = document.getElementById("current-user-box");
 
 // Event Listeners
 
@@ -39,7 +39,7 @@ function eventListeners() {
   const portSelect = document.querySelector("#port-select");
 
   // Validate the forms
-  if (sendBtn){
+  if (sendBtn) {
     email.addEventListener("blur", validateField);
     pickUp.addEventListener("blur", validateField);
     dropOff.addEventListener("blur", validateField);
@@ -58,57 +58,89 @@ function eventListeners() {
 
 // Functions
 
-// App Initialization
-function appInit() {
+function readPickUps(cb) {
+  $.ajax("/crew_pickups", {
+    type: "get",
+  }).then((result) => {
+    console.log(result);
+    cb(result);
 
-  console.log("apinit run");
-
-  if (sendBtn){
-  // disable the send button on load
-  sendBtn.disabled = true;
-  }
-
-  if (portSelect){
-    portSelect.style.display = "block";
-  }
-  if (displayPickups){
-  // show available pickups for this crew-member
-  console.log(user)
-  
-  
-    console.log("welcome to the pick ups div");
-  }
-
+    let data1 = {
+      data: result.remarks,
+    };
+    // ( "confirmation", { data: data1 })
+  });
 }
 
+// App Initialization
+function appInit() {
+  console.log(currentUserBox.value);
+  // if (currentUserBox){
+
+  //   currentUser = {
+  //     username: currentUserBox.value
+  // };
+}
+console.log("apinit run");
+
+if (sendBtn) {
+  // disable the send button on load
+  sendBtn.disabled = true;
+}
+
+if (portSelect) {
+  portSelect.style.display = "block";
+}
+if (displayPickups) {
+  // show available pickups for this crew-member
+  // console.log(user);
+
+  console.log("welcome to the pick ups div");
+  let username = "";
+  readPickUps(function (foundPickups) {
+    console.log(foundPickups);
+
+    if (foundPickups[0] != undefined) {
+      console.log(foundPickups);
+      let displayUl = document.getElementById("display-pickups-ul");
+      let i = 0;
+
+      for (i = 0; i <= foundPickups.length; i++) {
+        let pickup = foundPickups[i];
+
+        let container1 = document.createElement("li");
+        container1.innerHTML = ` time: ${pickup.timeJa} pick Up: ${pickup.pickUp}  vessel : ${pickup.vessel}  name: ${pickup.crew_full_name} drop off: ${pickup.dropOff}`;
+
+        displayUl.appendChild(container1);
+      }
+    }
+  });
+}
 
 function registerNewUser(e) {
   e.preventDefault();
 
   let table = "sci_users";
-  const newUser= {
-   
-    u_email:u_email.value,
-    u_password:u_password.value,
-    u_vessel:u_vessel.value,
-    u_last_name:u_last_name.value,
-    u_first_name:u_first_name.value,
-    u_cell:u_cell.value,
-    u_role:u_role.value || "mule",
-    u_whatsApp:u_whatsApp.value,
-  
+  const newUser = {
+    u_email: u_email.value,
+    u_password: u_password.value,
+    u_vessel: u_vessel.value,
+    u_last_name: u_last_name.value,
+    u_first_name: u_first_name.value,
+    u_cell: u_cell.value,
+    u_role: u_role.value || "mule",
+    u_whatsApp: u_whatsApp.value,
   };
 
   console.log(newUser);
 
-//   $.ajax("/register", {
-//     type: "POST",
-//     data: newUser,
-//   }).then(function () {
-//     console.log("new user registered added");
-//     console.log("request for registering an user  passed step1");
-// })
-
+  //   $.ajax("/register", {
+  //     type: "POST",
+  //     data: newUser,
+  //   }).then(function () {
+  //     console.log("new user registered added");
+  //     console.log("request for registering an user  passed step1");
+  // })
 
   // // disable the send button on load
   // sendBtn.disabled = true;
@@ -131,50 +163,47 @@ function sendEmail(e) {
   //   // Hide the spinner
   //   spinner.style.display = "none";
 
-    // Show the image
-    // document.querySelector("#loaders").appendChild(sendEmailImg);
-    let pickUpObject = {
-      portSelect: portSelect.value,
-      crew: crew.value,
-      email: email.value,
-      vessel: vessel.value,
-      whatsApp: whatsApp.value,
-      cell: cell.value,
-      pickUp: pickUp.value,
-      dropOff: dropOff.value,
-      numberCrew: numberCrew.value,
-      dateJa: dateJa.value,
-      timeJa: timeJa.value,
-      remarks: remarks.value
-      // verificationCode: verificationCode.value,
-    };
+  // Show the image
+  // document.querySelector("#loaders").appendChild(sendEmailImg);
+  let pickUpObject = {
+    portSelect: portSelect.value,
+    crew: crew.value,
+    email: email.value,
+    vessel: vessel.value,
+    whatsApp: whatsApp.value,
+    cell: cell.value,
+    pickUp: pickUp.value,
+    dropOff: dropOff.value,
+    numberCrew: numberCrew.value,
+    dateJa: dateJa.value,
+    timeJa: timeJa.value,
+    remarks: remarks.value,
+    // verificationCode: verificationCode.value,
+  };
 
-    // printJob(pickUpObject);
-    // save to database
-    saveToDataBase(pickUpObject);
-    // console.log(pickUpObject);
-    // After 5 seconds, hide the image and reset the form
-    // setTimeout(function () {
-    //   // sendEmailForm.reset();
-    //   sendEmailImg.remove();
-    // }, 2000);
+  // printJob(pickUpObject);
+  // save to database
+  saveToDataBase(pickUpObject);
+  // console.log(pickUpObject);
+  // After 5 seconds, hide the image and reset the form
+  // setTimeout(function () {
+  //   // sendEmailForm.reset();
+  //   sendEmailImg.remove();
+  // }, 2000);
   // }, 3000);
-}// save a new pick up to database 
+} // save a new pick up to database
 function saveToDataBase(pickUpObject) {
-
-  $.ajax("/pickup",  {
+  $.ajax("/pickup", {
     type: "POST",
     data: pickUpObject,
-     
-    }).then((result ) => {
-      console.log(result);
-     let data1 = {
-       data :result.remarks
-        
-      };
-      // ( "confirmation", { data: data1 })
-    });
-  }
+  }).then((result) => {
+    console.log(result);
+    let data1 = {
+      data: result.remarks,
+    };
+    // ( "confirmation", { data: data1 })
+  });
+}
 // Validate the fields
 function validateField() {
   let errors;
@@ -236,4 +265,4 @@ function resetForm(e) {
   // disable the send button on load
   sendBtn.disabled = true;
 }
-export {currentUser};
+export { currentUser };
