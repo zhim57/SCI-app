@@ -92,7 +92,7 @@ let user = await User.find({_id: userId}).then(async function(user) {
 console.log(user);
    pickups = await Pickup.find({crew_email: user.username} ) 
 }).then(function (pickups)  {
-  console.log(user);
+  console.log(pickups);
 
    res.json(pickups);
 })
