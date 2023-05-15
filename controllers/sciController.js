@@ -85,6 +85,7 @@ router.get("/vessel_input", function (req, res) {
   res.render("vessel_input");
 });
 router.get("/crew_pickups", async function (req, res) {
+  console.log(req.user);
   let userId = req.user.id;
   let pickups
 
