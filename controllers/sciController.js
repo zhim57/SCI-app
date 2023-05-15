@@ -84,13 +84,24 @@ router.get("/register", function (req, res) {
 router.get("/vessel_input", function (req, res) {
   res.render("vessel_input");
 });
-router.get("/crew_pickups", function (req, res) {
-  console.log(req.user);
-  let userId = req.user.googleId;
-  console.log("userId");
-  console.log(userId);
-  console.log(userId);
-  res.render("crew_pickups", {data: userId});
+router.get("/crew_pickups", async function (req, res) {
+  let userId = req.user.id;
+  let pickups
+
+let user = await User.find({_id: userId}).then(async function(user) {
+console.log(user);
+   pickups = await Pickup.find({crew_email: user.username} ) 
+}).then(function (pickups)  {
+  console.log(user);
+
+   res.jason(pickups);
+})
+
+  // console.log(req.user);
+  // console.log("userId");
+  // console.log(userId);
+  // console.log(userId);
+  // res.render("crew_pickups", {data: userId});
 });
 router.get("/seafarer", function (req, res) {
   if (req.isAuthenticated()) {
