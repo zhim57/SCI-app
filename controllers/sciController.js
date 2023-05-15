@@ -64,7 +64,7 @@ const Pickup = db.Pickup;
 const Vessel = db.Vessel;
 
 // Create all our routes and set up logic within those routes where required.
-router.get("/home", function (req, res) {
+router.get("/", function (req, res) {
   res.render("home");
 });
 router.get("/login", function (req, res) {
