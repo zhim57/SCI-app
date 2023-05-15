@@ -48,8 +48,8 @@ passport.use(
     {
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
-      // callbackURL: "http://localhost:8082/auth/google/home1",
-      callbackURL: "https://sci-transport.herokuapp.com/auth/google/home1",
+      callbackURL: process.env.CALL_BACK_URL,
+    
       passReqToCallback: true,
     },
     function (request, accessToken, refreshToken, profile, done) {
