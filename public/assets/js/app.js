@@ -27,6 +27,15 @@ const sendBtn = document.getElementById("sendBtn"),
   u_last_name = document.getElementById("user-last-name"),
   currentUserBox = document.getElementById("current-user-box");
 
+  const toastTrigger = document.getElementById('liveToastBtn')
+  const toastLiveExample = document.getElementById('liveToast')
+  if (toastTrigger) {
+    toastTrigger.addEventListener('click', () => {
+      const toast = new bootstrap.Toast(toastLiveExample)
+  
+      toast.show()
+    })
+  }
 // Event Listeners
 
 eventListeners();
@@ -37,7 +46,7 @@ function eventListeners() {
   document.addEventListener("DOMContentLoaded", appInit);
 
   const portSelect = document.querySelector("#port-select");
-
+  toasthide.addEventListener("click", toastHide);
   // Validate the forms
   if (sendBtn) {
     email.addEventListener("blur", validateField);
@@ -50,7 +59,7 @@ function eventListeners() {
     resetBtn.addEventListener("click", resetForm);
   }
   // verificationCode.addEventListener("blur", validateField);
-
+  
   // Send Email & reset button
   // sendEmailForm.addEventListener("submit", sendEmail);
   // sendBtn.addEventListener("click", sendEmail);
@@ -72,9 +81,17 @@ function readPickUps(cb) {
   });
 }
 
+function toastHide() {
+  toast.toast("cancel");
+}
+
 // App Initialization
 function appInit() {
-  console.log(currentUserBox.value);
+  
+
+ 
+
+  // console.log(currentUserBox.value);
   // if (currentUserBox){
 
   //   currentUser = {
@@ -306,4 +323,13 @@ function resetForm(e) {
   // disable the send button on load
   sendBtn.disabled = true;
 }
-export { currentUser };
+
+
+// if(toast){
+   
+
+ 
+  // toast.toast('show');
+
+//  }
+// export { currentUser };
