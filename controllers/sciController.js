@@ -78,7 +78,7 @@ router.get("/register", function (req, res) {
   res.render("register");
 });
 router.get("/vessel_input", function (req, res) {
-  res.render("vessel_input");
+  res.render("vessel_input",{ data:loggedUser});
 });
 router.get("/crew_pickups", async function (req, res) {
 
@@ -250,7 +250,7 @@ router.post("/vessel_input", async function (req, res) {
     v_name: req.body.v_name,
     v_imo: req.body.v_imo,
     v_email: req.body.v_email,
-    v_code: md5(req.body.v_code),
+    v_code: req.body.v_code
   });
   const foundVessel = await Vessel.find({ v_imo: v_imo });
 
@@ -273,9 +273,9 @@ router.post("/vessel_input", async function (req, res) {
   } else if (foundVessel[0].v_imo === v_imo) {
     data = {
       remarks:
-        "Hello " +
-        foundVessel[0].v_imo +
-        ",  this imo  is already in database, we ve sent the verification code to the ship's email on record!",
+        "Hello " + loggedUser.u_first_name+ 
+        ",  this imo : ("+
+        foundVessel[0].v_imo + " ) is already in the database, we will resend the verification code to the ship's email on record!",
       v_imo: foundVessel[0].v_imo,
       v_name: foundVessel[0].v_name,
     };

@@ -29,12 +29,15 @@ const sendBtn = document.getElementById("sendBtn"),
 
   const toastTrigger = document.getElementById('liveToastBtn')
   const toastLiveExample = document.getElementById('liveToast')
+  const toast = new bootstrap.Toast(toastLiveExample)
+
   if (toastTrigger) {
     toastTrigger.addEventListener('click', () => {
-      const toast = new bootstrap.Toast(toastLiveExample)
+      // const toast = new bootstrap.Toast(toastLiveExample)
   
-      toast.show()
+      toast.show();
     })
+    toast.show();
   }
 // Event Listeners
 
