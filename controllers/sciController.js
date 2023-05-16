@@ -85,12 +85,17 @@ router.get("/crew_pickups", async function (req, res) {
 
   let pickups = await Pickup.find({ crew_email: loggedUser.username }).then((pickups1) =>{
 
-res.send( pickups1);
+ res.send(pickups1);
     
 
   });
 
-      
+  // if (loggedUser.u_role === "seafarer") {
+  //   res.render("crew_pickups", { data: loggedUser });;
+  // } 
+  // else{
+  //   res.json("you do not have crew pickups - role not 'seafarer'");
+  // }
   
 });
 router.get("/seafarer", function (req, res) {
@@ -111,6 +116,8 @@ router.get("/driver", function (req, res) {
 router.get("/home1", async function (req, res) {
   let user = await User.findById(req.user.id);
   let data = user;
+  console.log(user);
+  loggedUser =user;
   if ( user.completed === true){
 
     if (loggedUser.u_role === "seafarer") {
