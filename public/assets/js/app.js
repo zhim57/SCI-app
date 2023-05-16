@@ -46,7 +46,7 @@ function eventListeners() {
   document.addEventListener("DOMContentLoaded", appInit);
 
   const portSelect = document.querySelector("#port-select");
-  toasthide.addEventListener("click", toastHide);
+
   // Validate the forms
   if (sendBtn) {
     email.addEventListener("blur", validateField);
@@ -81,9 +81,7 @@ function readPickUps(cb) {
   });
 }
 
-function toastHide() {
-  toast.toast("cancel");
-}
+
 
 // App Initialization
 function appInit() {
