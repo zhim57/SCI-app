@@ -113,7 +113,15 @@ router.get("/home1", async function (req, res) {
   let data = user;
   if ( user.completed === true){
 
-    res.render("profile_update", { data: data });
+    if (loggedUser.u_role === "seafarer") {
+      res.render("crew_pickups", { data: loggedUser });;
+    }  else if (loggedUser.u_role === "driver") {
+      res.render("driver", { data: loggedUser });
+    } else if (loggedUser.u_role === "dispatcher") {
+      res.render("dispatcher", { data: loggedUser });
+    } else if (loggedUser.u_role === "admin") {
+      res.render("admin", { data: loggedUser });
+    }
   }
   else{
 
@@ -199,6 +207,12 @@ console.log(req.body);
   var d = new Date();
   u_date += +(d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
   var id = req.user.id;
+  let completed =false;
+
+  if(req.body.u_email !="" && req.body.full_name !="" && req.body.u_vessel !="" && req.body.u_vessel_imo !="" && req.body.u_last_name !="" 
+  && req.body.u_first_name !="" && req.body.u_cell !="" && req.body.u_rank !="" && req.body.u_role !="" && req.body.u_whatsApp !="" && req.body.u_code !=""){
+completed =true;
+  }
   
   const updateUser = {
     username: req.body.u_email,
@@ -213,6 +227,8 @@ console.log(req.body);
     u_role: req.body.u_role,
     u_whatsApp: req.body.u_whatsApp,
     u_code: req.body.u_code,
+    completed: completed
+
   };
 
   const filter = { _id: id };
