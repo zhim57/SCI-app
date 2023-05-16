@@ -49,6 +49,7 @@ const userSchema = new mongoose.Schema({
   u_code: {type: String},
   date: { type: Date, default: Date.now },
   active: { type: Boolean, default: false },
+ completed: { type: Boolean, default: false },
  verified: { type: Boolean, default: false },
   outWard: { type: Boolean, default: false },
   inWard: { type: Boolean, default: false },

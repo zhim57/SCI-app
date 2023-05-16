@@ -12,48 +12,48 @@
           
             <div class="form-group">
               <p><label for="user-email ">Email/Username</label>
-              <input type="email" class="right" id="user-email" value= <%= data.username %> class="form-control" name="u_email" /></p>
+              <input type="email" class="right" id="user-email" class="form-control" name="u_email" value= <%= data.username %>  /></p>
             </div>
             <div class="form-group">
               <p><label for="user-rank" class="left">current rank</label>
-              <input type="text" id="user-rank"class="right" value= <%= data.u_rank %> name="u_rank" /></p>
+              <input type="text" id="user-rank"class="right" name="u_rank" value= <%= data.u_rank %>  /></p>
             </div>
             <div class="form-group">
               <label for="user-vessel">Current Vessel</label>
-              <input type="text" id="user-vessel"class="right" value= <%= data.u_vessel %> name="u_vessel" />
+              <input type="text" id="user-vessel"class="right" name="u_vessel" value= <%= data.u_vessel %>  >
             </div>
             <div class="form-group">
               <label for="user-vessel_imo">imo number</label>
-              <input type="text" id="user-vessel_imo"class="right" value= <%= data.u_vessel_imo %> name="u_vessel_imo" />
+              <input type="text" id="user-vessel_imo" name="u_vessel_imo" class="right" value= <%= data.u_vessel_imo %>  >
             </div>
             <div class="form-group">
               <label for="user-whatsApp">Your whatsApp number</label>
-              <input type="text" id="user-whatsApp"class="right" value= <%= data.u_whatsApp %> name="u_whatsApp" />
+              <input type="text" id="user-whatsApp"class="right" name="u_whatsApp" value= <%= data.u_whatsApp %>  >
             </div>
             <div class="form-group">
               <label for="user-cell">Your cell number</label>
-              <input type="text" id="user-cell"class="right" value= <%= data.u_cell %> name="u_cell" />
+              <input type="text" id="user-cell" class="right" name="u_cell" value= <%= data.u_cell %>  >
             </div>
             <div class="form-group">
               <label for="user-first-name">Your First Name</label>
-              <input type="text" id="user-first-name"class="right" value= <%= data.u_first_name %> name="u_first_name" />
+              <input type="text" id="user-first-name"class="right" name="u_first_name"  value= <%= data.u_first_name %> >
             </div>
             <div class="form-group">
               <label for="user-last-name">Your Last Name</label>
-              <input type="text" id="user-last-name"class="right" value= <%= data.u_last_name %> name="u_last_name" />
+              <input type="text" id="user-last-name"class="right" name="u_last_name" value= <%= data.u_last_name %>  >
             </div>
             <div class="form-group">
               <label for="u_role">Your Role - default is seafarer </label>
-              <input type="text" id="u_role"class="right" value= <%= data.u_role %> name="u_role" value="seafarer" />
+              <input type="text" id="u_role"class="right" value="seafarer"  name="u_role"  />
             </div>
             <div class="form-group">
               <label for="u_code">"Please type the 7 digit vessel's code as received on paper at the gangway"</label>
-              <input type="text" id="u_code"class="right" value= <%= data.u_code %> name="u_code" /> 
+              <input type="text" id="u_code"class="right"  name="u_code" value =<%= data.u_code %> > 
             </div>
             <p>The information you enter above will be used for pick up requests only and will not be shared with anyone.</p>
             <p>In case of problems please email us at: profiles(at)amicusshippingllc.com</p>
-           <p>Profile completed: </p>
-           <p>User verified: </p>
+           <p>Profile completed: <%= data.completed %></p>
+           <p>User verified: <%= data.verified %></p>
            
            
            

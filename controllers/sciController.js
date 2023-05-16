@@ -111,7 +111,14 @@ router.get("/driver", function (req, res) {
 router.get("/home1", async function (req, res) {
   let user = await User.findById(req.user.id);
   let data = user;
-  res.render("profile_update", { data: data });
+  if ( user.completed === true){
+
+    res.render("profile_update", { data: data });
+  }
+  else{
+
+    res.render("profile_update", { data: data });
+  }
 });
 
 router.get(
@@ -187,7 +194,7 @@ router.post("/register", function (req, res) {
 });
 router.post("/update_profile", async function (req, res) {
   let full_name = req.body.u_first_name + " " + req.body.u_last_name;
-
+console.log(req.body);
   var u_date = "";
   var d = new Date();
   u_date += +(d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
