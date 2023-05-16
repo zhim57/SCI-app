@@ -62,7 +62,7 @@ function readPickUps(cb) {
   $.ajax("/crew_pickups", {
     type: "get",
   }).then((result) => {
-    console.log(result);
+    // console.log(result);
     cb(result);
 
     let data1 = {
@@ -81,7 +81,7 @@ function appInit() {
   //     username: currentUserBox.value
   // };
 }
-console.log("apinit run");
+// console.log("apinit run");
 
 if (sendBtn) {
   // disable the send button on load
@@ -98,21 +98,62 @@ if (displayPickups) {
   console.log("welcome to the pick ups div");
   let username = "";
   readPickUps(function (foundPickups) {
-    console.log(foundPickups);
+    // console.log(foundPickups);
 
     if (foundPickups[0] != undefined) {
-      console.log(foundPickups);
+      // console.log(foundPickups);
       let displayUl = document.getElementById("display-pickups-ul");
       let i = 0;
 
-      for (i = 0; i <= foundPickups.length; i++) {
+      let thCheck = 0;
+      let table1 = document.createElement("table");
+      let tr1 = document.createElement("tr");
+
+      for (i = 0; i < foundPickups.length; i++) {
         let pickup = foundPickups[i];
+        // console.log(pickup);
+        let pickupD = {
+          time: pickup.timeJa,
+          pick_up: pickup.pickUp,
+          vessel: pickup.vessel,
+          pass_count: pickup.numberPass,
+          drop_Off: pickup.dropOff,
+          // crew_full_name : pickup.crew_full_name,
+          // crew_email: pickup.crew_email,
+          // crew_whatsApp: pickup.crew_whatsApp,
+          // crew_cell: pickup.crew_cell,
+          // remarks: pickup.remarks,
+          // dateJa: pickup.dateJa,
+        };
 
-        let container1 = document.createElement("li");
-        container1.innerHTML = ` time: ${pickup.timeJa} pick Up: ${pickup.pickUp}  vessel : ${pickup.vessel}  name: ${pickup.crew_full_name} drop off: ${pickup.dropOff}`;
+        // console.log(Object.keys(pickupD));
+        // console.log(Object.values(pickupD));
 
-        displayUl.appendChild(container1);
+        let keys = Object.keys(pickupD);
+        if (thCheck === 0) {
+          for (let k = 0; k < keys.length; k++) {
+            let th = document.createElement("th");
+            th.innerText = keys[k];
+            tr1.appendChild(th);
+          }
+          thCheck++;
+          table1.appendChild(tr1);
+        }
+        let tr2 = document.createElement("tr");
+        let values = Object.values(pickupD);
+        for (let z = 0; z < values.length; z++) {
+          let td = document.createElement("td");
+          td.innerText = values[z];
+          tr2.appendChild(td);
+        }
+        table1.appendChild(tr2);
+
+        // let container1 = document.createElement("li");
+        // container1.innerHTML = ` time: ${pickup.timeJa} pick Up: ${pickup.pickUp}  vessel : ${pickup.vessel}  name: ${pickup.crew_full_name} drop off: ${pickup.dropOff}`;
+
+        // displayUl.appendChild(container1);
       }
+      displayUl.appendChild(table1);
     }
   });
 }
