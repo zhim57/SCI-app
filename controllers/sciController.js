@@ -8,10 +8,10 @@ var passport = require("passport");
 dotenv.config({ path: "./.env" });
 const db = require("../db/db");
 const GoogleStrategy = require("passport-google-oauth2").Strategy;
-var loggedUser={};
+var loggedUser = {};
 
-const User = require("../models/user.js") ;
-const Employee = require("../models/employee.js") ;
+const User = require("../models/user.js");
+const Employee = require("../models/employee.js");
 const LocalStrategy = require("passport-local").Strategy;
 
 secretkey = process.env.SECRET;
@@ -26,7 +26,6 @@ router.use(passport.initialize());
 router.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 
-
 // used to serialize the user for the session
 passport.serializeUser(function (user, done) {
   done(null, user.id);
@@ -38,7 +37,6 @@ passport.deserializeUser(async function (id, done) {
   let user = User.findById(id).then((user) => {
     console.log("Deserialized user ");
     done(null, user);
-    
   });
 });
 
@@ -51,7 +49,6 @@ passport.use(
       passReqToCallback: true,
     },
     function (request, accessToken, refreshToken, profile, done) {
-       
       User.findOrCreate({ googleId: profile.id }, function (err, user) {
         return done(err, user);
       });
@@ -63,51 +60,35 @@ const Pickup = db.Pickup;
 const Vessel = db.Vessel;
 
 // Create all our routes and set up logic within those routes where required.
-// testi
+
+// GET routs start here
 router.get("/index", async function (req, res) {
-  let employees = await Employee.find().then(employees =>{
-
-    console.log(employees);
-
-    res.render("index", {employees:employees} );
-
-}).catch(err =>{
-  res.json("error"+ err)
-});
+  let employees = await Employee.find({})
+    .then((employees) => {
+      res.render("index", { employees: employees });
+    })
+    .catch((err) => {
+      res.json("error" + err);
+    });
 });
 router.get("/employee/new", function (req, res) {
   res.render("new");
 });
-router.post("/employee/new", async function (req, res) {
+router.get("/employee/search", function (req, res) {
+  let employee ={};
+  res.render("search",{employee:employee});
+});
+router.get("/employee", function (req, res) {
+  let searchQuery = {name: req.query.name};
+  
+  Employee.findOne(searchQuery).then(employee =>{
 
+    res.render("search", {employee:employee});
 
-
- let newEmployee = new Employee( {
-  name: req.body.name,
-  designation: req.body.designation,
-  salary: req.body.salary
- 
- });
- 
- 
- 
-let done = await newEmployee.save().then(async function (employee){
-
-  let employees = await Employee.find().then(employees =>{
-
-    console.log(employees);
-
-    res.render("index", {employees:employees} );
   }).catch(err =>{
-    res.json("error"+ err)
-  });
-
+    res.json("error"+err);
+  })
 });
-
-});
-
-
-
 
 
 router.get("/", function (req, res) {
@@ -127,29 +108,18 @@ router.get("/register", function (req, res) {
   res.render("register");
 });
 router.get("/vessel_input", function (req, res) {
-  res.render("vessel_input",{ data:loggedUser});
+  res.render("vessel_input", { data: loggedUser });
 });
 router.get("/crew_pickups", async function (req, res) {
-
-
-  let pickups = await Pickup.find({ crew_email: loggedUser.username }).then((pickups1) =>{
-
- res.send(pickups1);
-    
-
-  });
-
-  // if (loggedUser.u_role === "seafarer") {
-  //   res.render("crew_pickups", { data: loggedUser });;
-  // } 
-  // else{
-  //   res.json("you do not have crew pickups - role not 'seafarer'");
-  // }
-  
+  let pickups = await Pickup.find({ crew_email: loggedUser.username }).then(
+    (pickups1) => {
+      res.send(pickups1);
+    }
+  );
 });
 router.get("/seafarer", function (req, res) {
-  if (req.isAuthenticated()) { 
-    res.render("seafarer", {data:loggedUser});
+  if (req.isAuthenticated()) {
+    res.render("seafarer", { data: loggedUser });
   } else {
     res.redirect("/login");
   }
@@ -166,21 +136,18 @@ router.get("/home1", async function (req, res) {
   let user = await User.findById(req.user.id);
   let data = user;
   console.log(user);
-  loggedUser =user;
-  if ( user.completed === true){
-
+  loggedUser = user;
+  if (user.completed === true) {
     if (loggedUser.u_role === "seafarer") {
-      res.render("crew_pickups", { data: loggedUser });;
-    }  else if (loggedUser.u_role === "driver") {
+      res.render("crew_pickups", { data: loggedUser });
+    } else if (loggedUser.u_role === "driver") {
       res.render("driver", { data: loggedUser });
     } else if (loggedUser.u_role === "dispatcher") {
       res.render("dispatcher", { data: loggedUser });
     } else if (loggedUser.u_role === "admin") {
       res.render("admin", { data: loggedUser });
     }
-  }
-  else{
-
+  } else {
     res.render("profile_update", { data: data });
   }
 });
@@ -193,9 +160,31 @@ router.get(
   "/auth/google/home1",
   passport.authenticate("google", { failureredirect: "/login" }),
   function (req, res) {
-     res.redirect("/home1");
+    res.redirect("/home1");
   }
 );
+
+// GET routs end here
+
+// POST routs start here
+router.post("/employee/new", async function (req, res) {
+  let newEmployee = {
+    name: req.body.name,
+    designation: req.body.designation,
+    salary: req.body.salary,
+  };
+
+  Employee.create(newEmployee).then(async function () {
+    let employees = await Employee.find()
+      .then((employees) => {
+        res.render("index", { employees: employees });
+      })
+      .catch((err) => {
+        res.json("error" + err);
+      });
+  });
+});
+
 router.post("/register", function (req, res) {
   let full_name = req.body.u_first_name + " " + req.body.u_last_name;
 
@@ -214,7 +203,7 @@ router.post("/register", function (req, res) {
     u_cell: req.body.u_cell,
     u_role: req.body.u_role,
     u_whatsApp: req.body.u_whatsApp,
-    u_code: req.body.u_code
+    u_code: req.body.u_code,
   };
 
   User.register(
@@ -246,8 +235,8 @@ router.post("/register", function (req, res) {
             res.redirect("/register");
           } else {
             data = { remarks: "these are the remarks" };
-            
-            res.render("confirmation", {data:data} );
+
+            res.render("confirmation", { data: data });
 
             //  , {data:data}
           }
@@ -258,18 +247,29 @@ router.post("/register", function (req, res) {
 });
 router.post("/update_profile", async function (req, res) {
   let full_name = req.body.u_first_name + " " + req.body.u_last_name;
-console.log(req.body);
+  console.log(req.body);
   var u_date = "";
   var d = new Date();
   u_date += +(d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
   var id = req.user.id;
-  let completed =false;
+  let completed = false;
 
-  if(req.body.u_email !="" && req.body.full_name !="" && req.body.u_vessel !="" && req.body.u_vessel_imo !="" && req.body.u_last_name !="" 
-  && req.body.u_first_name !="" && req.body.u_cell !="" && req.body.u_rank !="" && req.body.u_role !="" && req.body.u_whatsApp !="" && req.body.u_code !=""){
-completed =true;
+  if (
+    req.body.u_email != "" &&
+    req.body.full_name != "" &&
+    req.body.u_vessel != "" &&
+    req.body.u_vessel_imo != "" &&
+    req.body.u_last_name != "" &&
+    req.body.u_first_name != "" &&
+    req.body.u_cell != "" &&
+    req.body.u_rank != "" &&
+    req.body.u_role != "" &&
+    req.body.u_whatsApp != "" &&
+    req.body.u_code != ""
+  ) {
+    completed = true;
   }
-  
+
   const updateUser = {
     username: req.body.u_email,
     u_full_name: full_name.replace(/ /g, "_"),
@@ -283,8 +283,7 @@ completed =true;
     u_role: req.body.u_role,
     u_whatsApp: req.body.u_whatsApp,
     u_code: req.body.u_code,
-    completed: completed
-
+    completed: completed,
   };
 
   const filter = { _id: id };
@@ -320,7 +319,6 @@ completed =true;
   }
 });
 
-
 router.post("/vessel_input", async function (req, res) {
   const v_name = req.body.v_name;
   const v_imo = req.body.v_imo;
@@ -329,7 +327,7 @@ router.post("/vessel_input", async function (req, res) {
     v_name: req.body.v_name,
     v_imo: req.body.v_imo,
     v_email: req.body.v_email,
-    v_code: req.body.v_code
+    v_code: req.body.v_code,
   });
   const foundVessel = await Vessel.find({ v_imo: v_imo });
 
@@ -352,9 +350,11 @@ router.post("/vessel_input", async function (req, res) {
   } else if (foundVessel[0].v_imo === v_imo) {
     data = {
       remarks:
-        "Hello " + loggedUser.u_first_name+ 
-        ",  this imo : ("+
-        foundVessel[0].v_imo + " ) is already in the database, we will resend the verification code to the ship's email on record!",
+        "Hello " +
+        loggedUser.u_first_name +
+        ",  this imo : (" +
+        foundVessel[0].v_imo +
+        " ) is already in the database, we will resend the verification code to the ship's email on record!",
       v_imo: foundVessel[0].v_imo,
       v_name: foundVessel[0].v_name,
     };
@@ -363,12 +363,11 @@ router.post("/vessel_input", async function (req, res) {
 });
 
 router.post("/crew-pickups", async function (req, res) {
-
   const foundPickups = await Pickup.find({ crew_email: req.body.crew1 });
   if (foundPickups[0] != undefined) {
     console.log(foundPickups);
 
-    res.render("crew_pickups", {data: loggedUser});
+    res.render("crew_pickups", { data: loggedUser });
   }
 });
 
@@ -393,7 +392,6 @@ router.post("/login", function (req, res) {
           res.json({ success: false, message: err + "!1! " });
         } else {
           if (!user) {
-            
             console.log("no user");
 
             // res.json({
@@ -407,14 +405,9 @@ router.post("/login", function (req, res) {
               { expiresIn: "24h" }
             );
             // res.json({ success: true, message: "Authentication successful", token: token });
-          
-          
-          
-          
-          
+
             const foundPreviousUser = await User.find({ username: username });
             if (foundPreviousUser[0] != undefined) {
-      
               var u_date = "";
               var d = new Date();
               u_date +=
@@ -431,7 +424,7 @@ router.post("/login", function (req, res) {
                 u_full_name: foundPreviousUser[0].u_full_name,
                 u_date: u_date,
               };
-    
+
               if (loggedUser.u_role === "seafarer") {
                 res.render("seafarer", { data: loggedUser });
               } else if (loggedUser.u_role === "driver") {
@@ -446,12 +439,9 @@ router.post("/login", function (req, res) {
             }
           }
         }
-
       })(req, res);
     }
   });
-
- 
 
   function hide() {
     if (result === true) {
@@ -461,12 +451,10 @@ router.post("/login", function (req, res) {
     ) {
       console.log("sorry, wrong password entered...");
     }
-
   }
 });
 
 router.post("/pickup", async function (req, res) {
-
   const newPickup = new Pickup({
     crew_full_name: req.body.crew,
     crew_email: req.body.email,
@@ -486,7 +474,7 @@ router.post("/pickup", async function (req, res) {
 
   if (foundPreviousPickUp[0] === undefined) {
     const result1 = await newPickup.save();
-  
+
     data = {
       remarks:
         "Hello " +
