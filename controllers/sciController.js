@@ -75,8 +75,8 @@ router.get("/employee/new", function (req, res) {
   res.render("new");
 });
 router.get("/employee/search", function (req, res) {
-  let employee ={};
-  res.render("search",{employee:employee});
+
+  res.render("search",{employee:""});
 });
 router.get("/employee", function (req, res) {
   let searchQuery = {name: req.query.name};
@@ -89,6 +89,35 @@ router.get("/employee", function (req, res) {
     res.json("error"+err);
   })
 });
+
+router.get("/edit/:id", function(req, res){
+  let id= req.params.id;
+let searchQuery = {_id: id}
+Employee.findOne(searchQuery).then(employee =>{
+  res.render("edit", {employee:employee});
+}).catch(err =>{
+  res.json("error" + err);
+});
+});
+router.put("/edit/:id", function(req, res){
+  let id= req.params.id;
+let searchQuery = {_id: id};
+let updateObj={name:req.body.name,
+  designation:req.body.designation,
+  salary:req.body.salary
+
+
+}
+Employee.updateOne(searchQuery, {$set:{name:req.body.name,
+  designation:req.body.designation,
+  salary:req.body.salary}}).then(employee =>{
+  res.redirect("/index");
+}).catch(err =>{
+  res.json("error" + err);
+});
+});
+
+
 
 
 router.get("/", function (req, res) {

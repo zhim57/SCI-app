@@ -19,7 +19,7 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
 // Serve static content for the app from the "public" directory in the application directory.
-app.use(express.static(__dirname + "/public"));
+app.use(express.static("public"));
 
 //middleware for  method override
 app.use(methodOverride("_method"));
