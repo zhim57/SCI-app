@@ -1,63 +1,54 @@
 const dotenv = require("dotenv");
-var mongoose = require("mongoose");
+const methodOverride = require("method-override");
+// var mongoose = require("mongoose");
 var express = require("express");
+const app = express();
 const path = require("path");
-// var router = express.Router();
-const ejs = require("ejs");
-const bodyParser = require("body-parser");
-// var md5 = require('md5');
+// const ejs = require("ejs");
 const session = require("express-session");
-var passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
-const db = require("./db/db");
-const User = db.User;
+const flash = require("connect-flash");
+const bodyParser = require("body-parser");
 
+// Import routes and give the server access to them.
+const routes = require("./controllers/sciController.js");
 
-
-
-
-var PORT = process.env.PORT || 8082;
 dotenv.config({ path: "./.env" });
 
-var app = express();
-
+app.use(bodyParser.urlencoded({ extended: true }));
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
 // Serve static content for the app from the "public" directory in the application directory.
 app.use(express.static(__dirname + "/public"));
 
+//middleware for  method override
+app.use(methodOverride("_method"));
+
 // Parse application body as JSON
 app.use(express.urlencoded({ extended: true }));
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Import routes and give the server access to them.
-var routes = require("./controllers/sciController.js");
-
-
-//initialize session
+//middleware for express session
 app.use(
   session({
     secret: process.env.SECRET,
     resave: false,
-    saveUninitialized: false
-    
-  }));
-// app.use(passport.initialize());
-// app.use(passport.session());
-// passport.use(new LocalStrategy(User.authenticate()));
-// passport.serializeUser(User.serializeUser());
-// passport.deserializeUser(User.deserializeUser());
+    saveUninitialized: false,
+  })
+);
+//middleware for connect flash
+app.use(flash());
 
-
-
-
+//Setting messages variables globally
+app.use((req, res, next) => {
+  res.locals.success_msg = req.flash("success_msg");
+  res.locals.error_msg = req.flash("error_msg");
+  next();
+});
 
 app.use(routes);
 
-// Start our server so that it can begin listening to client requests.
+var PORT = process.env.PORT || 8082;
 app.listen(PORT, function () {
-  // Log (server-side) when our server has started
   console.log("Server listening on: http://localhost:" + PORT + "/");
 });

@@ -1,11 +1,8 @@
 const dotenv = require("dotenv");
-const config = require("../config/config.json");
 const mongoose = require("mongoose");
-var passport = require("passport");
-const passportLocalMongoose = require("passport-local-mongoose");
-const path = require("path");
+
+// const path = require("path");
 dotenv.config({ path: "./.env" });
-var findOrCreate = require('mongoose-findorcreate')
 // var ClickSchema = new Schema({ ... });
 
 
@@ -14,7 +11,7 @@ const connectionOptions = {
 };
 
 mongoose.connect(
-  process.env.MONGODB_URI, //|| config.connectionString,
+  process.env.MONGODB_URI || process.env.DATABASE_LOCAL, 
   connectionOptions
 );
 mongoose.Promise = global.Promise;
@@ -33,36 +30,6 @@ const vesselSchema = new mongoose.Schema({
 
 const Vessel = new mongoose.model("Vessel", vesselSchema);
 
-const userSchema = new mongoose.Schema({
-  username: { type: String, unique: true },
-  password: String,
-  googleId :String,
-  u_full_name: String,
-  u_rank:String,
-  u_vessel: String,
-  u_vessel_imo: String,
-  u_last_name:String,
-  u_first_name: String,
-  u_cell: String,
-  u_role: String,
-  u_whatsApp: String,
-  u_code: {type: String},
-  date: { type: Date, default: Date.now },
-  active: { type: Boolean, default: false },
- completed: { type: Boolean, default: false },
- verified: { type: Boolean, default: false },
-  outWard: { type: Boolean, default: false },
-  inWard: { type: Boolean, default: false },
-});
-
-userSchema.plugin(passportLocalMongoose);
-// Add any other plugins or middleware here. For example, middleware for hashing passwords
-userSchema.plugin(findOrCreate);
-// var Click = mongoose.model('Click', ClickSchema);
-
-
-const User = new mongoose.model("User", userSchema);
-passport.use(User.createStrategy());
 
 // passport.serializeUser(User.serializeUser());
 // passport.deserializeUser(User.deserializeUser());
@@ -103,6 +70,6 @@ const Pickup = new mongoose.model("Pickup", pickupSchema);
 
 module.exports = {
   Pickup,
-  User,
+
   Vessel
  };

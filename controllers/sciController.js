@@ -1,19 +1,18 @@
 const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
-var express = require("express");
-var router = express.Router();
-var md5 = require("md5");
+const express = require("express");
+const router = express.Router();
+// var md5 = require("md5");
 const session = require("express-session");
 var passport = require("passport");
 dotenv.config({ path: "./.env" });
 const db = require("../db/db");
 const GoogleStrategy = require("passport-google-oauth2").Strategy;
-var loggedUser;
+var loggedUser={};
 
-const User = db.User;
-
+const User = require("../models/user.js") ;
+const Employee = require("../models/employee.js") ;
 const LocalStrategy = require("passport-local").Strategy;
-
 
 secretkey = process.env.SECRET;
 router.use(
@@ -35,8 +34,11 @@ passport.serializeUser(function (user, done) {
 
 // used to deserialize the user
 passport.deserializeUser(async function (id, done) {
+  console.log("Deserializing user...");
   let user = User.findById(id).then((user) => {
-    done(err, user);
+    console.log("Deserialized user ");
+    done(null, user);
+    
   });
 });
 
@@ -61,6 +63,53 @@ const Pickup = db.Pickup;
 const Vessel = db.Vessel;
 
 // Create all our routes and set up logic within those routes where required.
+// testi
+router.get("/index", async function (req, res) {
+  let employees = await Employee.find().then(employees =>{
+
+    console.log(employees);
+
+    res.render("index", {employees:employees} );
+
+}).catch(err =>{
+  res.json("error"+ err)
+});
+});
+router.get("/employee/new", function (req, res) {
+  res.render("new");
+});
+router.post("/employee/new", async function (req, res) {
+
+
+
+ let newEmployee = new Employee( {
+  name: req.body.name,
+  designation: req.body.designation,
+  salary: req.body.salary
+ 
+ });
+ 
+ 
+ 
+let done = await newEmployee.save().then(async function (employee){
+
+  let employees = await Employee.find().then(employees =>{
+
+    console.log(employees);
+
+    res.render("index", {employees:employees} );
+  }).catch(err =>{
+    res.json("error"+ err)
+  });
+
+});
+
+});
+
+
+
+
+
 router.get("/", function (req, res) {
   res.render("home");
 });
@@ -165,7 +214,7 @@ router.post("/register", function (req, res) {
     u_cell: req.body.u_cell,
     u_role: req.body.u_role,
     u_whatsApp: req.body.u_whatsApp,
-    u_code: md5(req.body.u_code),
+    u_code: req.body.u_code
   };
 
   User.register(
@@ -177,9 +226,10 @@ router.post("/register", function (req, res) {
       u_last_name: req.body.u_last_name,
       u_first_name: req.body.u_first_name,
       u_cell: req.body.u_cell,
+      u_rank: req.body.u_rank.replace(/ /g, "_"),
       u_role: req.body.u_role,
       u_whatsApp: req.body.u_whatsApp,
-      u_code: md5(req.body.u_code),
+      u_code: req.body.u_code,
       username: req.body.u_email,
     }),
     req.body.u_password,
@@ -196,9 +246,8 @@ router.post("/register", function (req, res) {
             res.redirect("/register");
           } else {
             data = { remarks: "these are the remarks" };
-            // res.json({ success: true, message: "Your account has been saved" });
-            var string = encodeURIComponent(JSON.stringify(newUser));
-            res.redirect("/seafarer?valid=" + string);
+            
+            res.render("confirmation", {data:data} );
 
             //  , {data:data}
           }
@@ -327,8 +376,10 @@ router.post("/login", function (req, res) {
   let username = req.body.username;
   const user = new User({
     username: req.body.username,
-    password: req.body.upassword,
+    password: req.body.password,
   });
+
+  console.log(user);
   req.login(user, function (err) {
     if (err) {
       res.json({
@@ -342,10 +393,13 @@ router.post("/login", function (req, res) {
           res.json({ success: false, message: err + "!1! " });
         } else {
           if (!user) {
-            res.json({
-              success: false,
-              message: "username or password incorrect",
-            });
+            
+            console.log("no user");
+
+            // res.json({
+            //   success: false,
+            //   message: "username or password incorrect",
+            // });
           } else {
             const token = jwt.sign(
               { userId: user._id, username: user.username },
@@ -353,41 +407,46 @@ router.post("/login", function (req, res) {
               { expiresIn: "24h" }
             );
             // res.json({ success: true, message: "Authentication successful", token: token });
+          
+          
+          
+          
+          
+            const foundPreviousUser = await User.find({ username: username });
+            if (foundPreviousUser[0] != undefined) {
+      
+              var u_date = "";
+              var d = new Date();
+              u_date +=
+                +(d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
+              loggedUser = {
+                username: foundPreviousUser[0].username,
+                u_vessel: foundPreviousUser[0].u_vessel.replace(/ /g, "_"),
+                u_vessel_imo: foundPreviousUser[0].u_vessel_imo,
+                u_last_name: foundPreviousUser[0].u_last_name,
+                u_first_name: foundPreviousUser[0].u_first_name,
+                u_cell: foundPreviousUser[0].u_cell,
+                u_role: foundPreviousUser[0].u_role,
+                u_whatsApp: foundPreviousUser[0].u_whatsApp,
+                u_full_name: foundPreviousUser[0].u_full_name,
+                u_date: u_date,
+              };
+    
+              if (loggedUser.u_role === "seafarer") {
+                res.render("seafarer", { data: loggedUser });
+              } else if (loggedUser.u_role === "driver") {
+                res.render("driver", { data: loggedUser });
+              } else if (loggedUser.u_role === "dispatcher") {
+                res.render("dispatcher", { data: loggedUser });
+              } else if (loggedUser.u_role === "admin") {
+                res.render("admin", { data: loggedUser });
+              }
+            } else {
+              console.log("error user not found");
+            }
           }
         }
 
-        const foundPreviousUser = await User.find({ username: username });
-        if (foundPreviousUser[0] != undefined) {
-  
-          var u_date = "";
-          var d = new Date();
-          u_date +=
-            +(d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
-          loggedUser = {
-            username: foundPreviousUser[0].username,
-            u_vessel: foundPreviousUser[0].u_vessel.replace(/ /g, "_"),
-            u_vessel_imo: foundPreviousUser[0].u_vessel_imo,
-            u_last_name: foundPreviousUser[0].u_last_name,
-            u_first_name: foundPreviousUser[0].u_first_name,
-            u_cell: foundPreviousUser[0].u_cell,
-            u_role: foundPreviousUser[0].u_role,
-            u_whatsApp: foundPreviousUser[0].u_whatsApp,
-            u_full_name: foundPreviousUser[0].u_full_name,
-            u_date: u_date,
-          };
-
-          if (loggedUser.u_role === "seafarer") {
-            res.render("seafarer", { data: loggedUser });
-          } else if (loggedUser.u_role === "driver") {
-            res.render("driver", { data: loggedUser });
-          } else if (loggedUser.u_role === "dispatcher") {
-            res.render("dispatcher", { data: loggedUser });
-          } else if (loggedUser.u_role === "admin") {
-            res.render("admin", { data: loggedUser });
-          }
-        } else {
-          console.log("error user not found");
-        }
       })(req, res);
     }
   });
