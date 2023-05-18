@@ -27,18 +27,18 @@ const sendBtn = document.getElementById("sendBtn"),
   u_last_name = document.getElementById("user-last-name"),
   currentUserBox = document.getElementById("current-user-box");
 
-  const toastTrigger = document.getElementById('liveToastBtn')
-  const toastLiveExample = document.getElementById('liveToast')
-  const toast = new bootstrap.Toast(toastLiveExample)
+const toastTrigger = document.getElementById("liveToastBtn");
+const toastLiveExample = document.getElementById("liveToast");
+const toast = new bootstrap.Toast(toastLiveExample);
 
-  if (toastTrigger) {
-    toastTrigger.addEventListener('click', () => {
-      // const toast = new bootstrap.Toast(toastLiveExample)
-  
-      toast.show();
-    })
+if (toastTrigger) {
+  toastTrigger.addEventListener("click", () => {
+    // const toast = new bootstrap.Toast(toastLiveExample)
+
     toast.show();
-  }
+  });
+  toast.show();
+}
 // Event Listeners
 
 eventListeners();
@@ -62,7 +62,7 @@ function eventListeners() {
     resetBtn.addEventListener("click", resetForm);
   }
   // verificationCode.addEventListener("blur", validateField);
-  
+
   // Send Email & reset button
   // sendEmailForm.addEventListener("submit", sendEmail);
   // sendBtn.addEventListener("click", sendEmail);
@@ -70,35 +70,28 @@ function eventListeners() {
 
 // Functions
 
+// read picups  - disabled 5-18-23
 function readPickUps(cb) {
   $.ajax("/crew_pickups", {
     type: "get",
   }).then((result) => {
-    // console.log(result);
     cb(result);
-
     let data1 = {
       data: result.remarks,
     };
-    // ( "confirmation", { data: data1 })
   });
 }
 
 
-
 // App Initialization
 function appInit() {
-  
 
- 
-
-  // console.log(currentUserBox.value);
-  // if (currentUserBox){
-
-  //   currentUser = {
-  //     username: currentUserBox.value
-  // };
-}
+  console.log($('#current-user-box').attr('data-value'))
+  if (currentUserBox){
+    currentUser = {
+      username: currentUserBox.innerText
+  };
+  }
 // console.log("apinit run");
 
 if (sendBtn) {
@@ -111,71 +104,62 @@ if (portSelect) {
 }
 if (displayPickups) {
   // show available pickups for this crew-member
-  // console.log(user);
 
   console.log("welcome to the pick ups div");
+ 
   let username = "";
-  readPickUps(function (foundPickups) {
-    // console.log(foundPickups);
 
-    if (foundPickups[0] != undefined) {
-      // console.log(foundPickups);
-      let displayUl = document.getElementById("display-pickups-ul");
-      let i = 0;
+  // below function disabled on 5-18-2023===========
 
-      let thCheck = 0;
-      let table1 = document.createElement("table");
-      let tr1 = document.createElement("tr");
+  // readPickUps(function (foundPickups) {
+ 
 
-      for (i = 0; i < foundPickups.length; i++) {
-        let pickup = foundPickups[i];
-        // console.log(pickup);
-        let pickupD = {
-          time: pickup.timeJa,
-          pick_up: pickup.pickUp,
-          vessel: pickup.vessel,
-          pass_count: pickup.numberPass,
-          drop_Off: pickup.dropOff,
-          // crew_full_name : pickup.crew_full_name,
-          // crew_email: pickup.crew_email,
-          // crew_whatsApp: pickup.crew_whatsApp,
-          // crew_cell: pickup.crew_cell,
-          // remarks: pickup.remarks,
-          // dateJa: pickup.dateJa,
-        };
+  //   if (foundPickups[0] != undefined) {
+   
+  //     let displayUl = document.getElementById("display-pickups-ul");
+  //     let i = 0;
 
-        // console.log(Object.keys(pickupD));
-        // console.log(Object.values(pickupD));
+  //     let thCheck = 0;
+  //     let table1 = document.createElement("table");
+  //     let tr1 = document.createElement("tr");
 
-        let keys = Object.keys(pickupD);
-        if (thCheck === 0) {
-          for (let k = 0; k < keys.length; k++) {
-            let th = document.createElement("th");
-            th.innerText = keys[k];
-            tr1.appendChild(th);
-          }
-          thCheck++;
-          table1.appendChild(tr1);
-        }
-        let tr2 = document.createElement("tr");
-        let values = Object.values(pickupD);
-        for (let z = 0; z < values.length; z++) {
-          let td = document.createElement("td");
-          td.innerText = values[z];
-          tr2.appendChild(td);
-        }
-        table1.appendChild(tr2);
+  //     for (i = 0; i < foundPickups.length; i++) {
+  //       let pickup = foundPickups[i];
+  //       // console.log(pickup);
+  //       let pickupD = {
+  //         time: pickup.timeJa,
+  //         pick_up: pickup.pickUp,
+  //         vessel: pickup.vessel,
+  //         pass_count: pickup.numberPass,
+  //         drop_Off: pickup.dropOff,
+   
+  //       };
+  //       let keys = Object.keys(pickupD);
+  //       if (thCheck === 0) {
+  //         for (let k = 0; k < keys.length; k++) {
+  //           let th = document.createElement("th");
+  //           th.innerText = keys[k];
+  //           tr1.appendChild(th);
+  //         }
+  //         thCheck++;
+  //         table1.appendChild(tr1);
+  //       }
+  //       let tr2 = document.createElement("tr");
+  //       let values = Object.values(pickupD);
+  //       for (let z = 0; z < values.length; z++) {
+  //         let td = document.createElement("td");
+  //         td.innerText = values[z];
+  //         tr2.appendChild(td);
+  //       }
+  //       table1.appendChild(tr2);
+  //     }
+  //     displayUl.appendChild(table1);
+  //   }
+  // });
 
-        // let container1 = document.createElement("li");
-        // container1.innerHTML = ` time: ${pickup.timeJa} pick Up: ${pickup.pickUp}  vessel : ${pickup.vessel}  name: ${pickup.crew_full_name} drop off: ${pickup.dropOff}`;
-
-        // displayUl.appendChild(container1);
-      }
-      displayUl.appendChild(table1);
-    }
-  });
+   // above function disabled on 5-18-2023===========
 }
-
+}
 function registerNewUser(e) {
   e.preventDefault();
 
@@ -325,12 +309,9 @@ function resetForm(e) {
   sendBtn.disabled = true;
 }
 
-
 // if(toast){
-   
 
- 
-  // toast.toast('show');
+// toast.toast('show');
 
 //  }
 // export { currentUser };

@@ -168,7 +168,15 @@ router.get("/home1", async function (req, res) {
   loggedUser = user;
   if (user.completed === true) {
     if (loggedUser.u_role === "seafarer") {
-      res.render("crew_pickups", { data: loggedUser });
+
+      const foundPickups = await Pickup.find({ crew_email: loggedUser.username });
+      if (foundPickups[0] != undefined) {
+        console.log(foundPickups);
+    
+        res.render("crew_pickups", { data: {user:loggedUser , pickups: foundPickups}});
+      }
+   
+      
     } else if (loggedUser.u_role === "driver") {
       res.render("driver", { data: loggedUser });
     } else if (loggedUser.u_role === "dispatcher") {
@@ -223,9 +231,9 @@ router.post("/register", function (req, res) {
 
   const newUser = {
     username: req.body.u_email,
-    u_full_name: full_name.replace(/ /g, "_"),
+    u_full_name: full_name,
     u_date: u_date,
-    u_vessel: req.body.u_vessel.replace(/ /g, "_"),
+    u_vessel: req.body.u_vessel,
     u_vessel_imo: req.body.u_vessel_imo,
     u_last_name: req.body.u_last_name,
     u_first_name: req.body.u_first_name,
@@ -237,14 +245,14 @@ router.post("/register", function (req, res) {
 
   User.register(
     new User({
-      u_full_name: full_name.replace(/ /g, "_"),
+      u_full_name: full_name,
       u_date: u_date,
-      u_vessel: req.body.u_vessel.replace(/ /g, "_"),
+      u_vessel: req.body.u_vessel,
       u_vessel_imo: req.body.u_vessel_imo,
       u_last_name: req.body.u_last_name,
       u_first_name: req.body.u_first_name,
       u_cell: req.body.u_cell,
-      u_rank: req.body.u_rank.replace(/ /g, "_"),
+      u_rank: req.body.u_rank,
       u_role: req.body.u_role,
       u_whatsApp: req.body.u_whatsApp,
       u_code: req.body.u_code,
@@ -301,14 +309,14 @@ router.post("/update_profile", async function (req, res) {
 
   const updateUser = {
     username: req.body.u_email,
-    u_full_name: full_name.replace(/ /g, "_"),
+    u_full_name: full_name,
     u_date: u_date,
-    u_vessel: req.body.u_vessel.replace(/ /g, "_"),
+    u_vessel: req.body.u_vessel,
     u_vessel_imo: req.body.u_vessel_imo,
     u_last_name: req.body.u_last_name,
     u_first_name: req.body.u_first_name,
     u_cell: req.body.u_cell,
-    u_rank: req.body.u_rank.replace(/ /g, "_"),
+    u_rank: req.body.u_rank,
     u_role: req.body.u_role,
     u_whatsApp: req.body.u_whatsApp,
     u_code: req.body.u_code,
@@ -338,7 +346,17 @@ router.post("/update_profile", async function (req, res) {
   };
 
   if (loggedUser.u_role === "seafarer") {
-    res.render("crew_pickups", { data: loggedUser }); //, { data: loggedUser }
+
+
+
+    const foundPickups = await Pickup.find({ crew_email: loggedUser.username });
+    if (foundPickups[0] != undefined) {
+      console.log(foundPickups);
+  
+      res.render("crew_pickups", { data: {user:loggedUser , pickups: foundPickups}});
+    } else{
+      res.json("no pick ups for this user yet");
+    }
   } else if (loggedUser.u_role === "driver") {
     res.render("driver", { data: loggedUser });
   } else if (loggedUser.u_role === "dispatcher") {
@@ -396,7 +414,7 @@ router.post("/crew-pickups", async function (req, res) {
   if (foundPickups[0] != undefined) {
     console.log(foundPickups);
 
-    res.render("crew_pickups", { data: loggedUser });
+    res.render("crew_pickups", { data: {user:loggedUser , pickups: foundPickups}});
   }
 });
 
@@ -443,7 +461,7 @@ router.post("/login", function (req, res) {
                 +(d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
               loggedUser = {
                 username: foundPreviousUser[0].username,
-                u_vessel: foundPreviousUser[0].u_vessel.replace(/ /g, "_"),
+                u_vessel: foundPreviousUser[0].u_vessel,
                 u_vessel_imo: foundPreviousUser[0].u_vessel_imo,
                 u_last_name: foundPreviousUser[0].u_last_name,
                 u_first_name: foundPreviousUser[0].u_first_name,

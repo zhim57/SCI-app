@@ -23,15 +23,67 @@
 
 
     <div class="row">
-      <div id="current-user-box" value=<%=data.username %> ></div>
+      <div id="current-user-box" data-value="<%= data.user.username %>" ></div>
       <div class="col s12 >
           <!-- class=" m2" -->
         <div id="content">
           <header id="header" class=" blue darken-1">
             <a>
-              <%= data.user_full_name %>
-            </a> My pick ups
+              
+            </a> <%= data.user.u_full_name %>'s pick ups
           </header>
+
+          <div class="container mt-5">
+            <%- include('partials/messages') -%>
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                      <th>Time</th>
+                      <th>Location</th>
+                      <th>vessel</th>
+                      <th>Pass count</th>                      
+                      <th>Destination</th>
+                        <th>Operations</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                      <th>Time</th>
+                      <th>Location</th>
+                      <th>vessel</th>
+                      <th>Pass count</th>                      
+                      <th>Destination</th>
+                        <th>Operations</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    <% data.pickups.forEach((pickup)=> { %>
+                            <tr>
+                                <td><%= pickup.timeJa %></td>
+                                <td><%= pickup.pickUp %></td>
+                                <td><%= pickup.vessel %></td>
+                                <td><%= pickup.numberPass %></td>
+                                <td><%= pickup.dropOff %></td>
+                                <td>
+                                    <a class="btn btn-primary" href="/edit/<%= pickup._id %>">Edit</a>
+                                    <form style="display: inline;" action="/delete/<%= pickup._id %>?_method=DELETE" method="POST">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <button style="cursor: pointer;" type="submit" class="btn btn-danger ml-2">Delete</button>
+                                        <!-- <button style="cursor: pointer;" type="submit" class="btn green ml-2">Katia</button> -->
+                                    </form>
+                                </td>
+                            </tr>
+                       <% }) %>
+                        
+        
+                    </tbody>
+                </table>
+            </div>
+
+
+
+
+
         
             <div class="col s12 ">
               <ul id="display-pickups-ul">

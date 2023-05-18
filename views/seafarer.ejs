@@ -49,37 +49,37 @@
 
                             <div class="row">
                                 <div class="input-field col s12 text-ja">
-                                    <input id="crew" value= <%= data.u_full_name %> name="crew" type="text">
+                                    <input id="crew" value= "<%= data.u_full_name %>" name="crew" type="text">
                                     <label for="crew"   >Your Name:</label>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="input-field col s12 text-ja">
-                                    <input id="email" autocomplete="on"  value= <%= data.username %> type="email" name="email"> 
+                                    <input id="email" autocomplete="on"  value="<%= data.username %>" type="email" name="email"> 
                                     <label for="email">Your email:</label>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="input-field col s12 text-ja">
-                                    <input id="vessel" name="vessel" type="text" value= <%= data.u_vessel %>>
+                                    <input id="vessel" name="vessel" type="text" value= "<%= data.u_vessel %>">
                                     <label for="vessel" >Name of your vessel:</label>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="input-field col s12 text-ja">
-                                    <input id="vessel_imo" mame= "vessel_imo" type="text"  value= <%= data.u_vessel_imo %> >
+                                    <input id="vessel_imo" mame= "vessel_imo" type="text"  value= "<%= data.u_vessel_imo %>" >
                                     <label for="vessel_imo" >Your vessel's IMO:</label>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="input-field col s12 text-ja">
-                                    <input id="whatsapp-number" name="whatsApp_number" type="text" value= <%= data.u_whatsApp %> >
+                                    <input id="whatsapp-number" name="whatsApp_number" type="text" value= "<%= data.u_whatsApp %>" >
                                     <label for="whatsapp-number" >Your whatsapp number:</label>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="input-field col s12 text-ja">
-                                    <input id="cell-number" name="cell_number" type="text" value= <%= data.u_cell %> >
+                                    <input id="cell-number" name="cell_number" type="text" value= "<%= data.u_cell %>" >
                                     <label for="cell-number" >Your cell number:</label>
                                 </div>
                             </div>
@@ -107,7 +107,7 @@
                             </select>
                             <label for="dropoff-select">Where do you wish to go?:</label>
                             <select id="dropoff-select" name="dropoff_select">
-                                <option value="" selected>drop off Location</option>
+                                <option value="" selected>Destination</option>
                                 <option value="Jersey Gardens gate C" >Jersey Gardens Gate C</option>
                                 <option value="APM" >APM</option>
                                 <option value="PNCT">PNCT</option>
@@ -124,12 +124,12 @@
                             <div class="row">
                                 <div class="input-field col s12">
                                     <input id="number-crew" name="number_crew" type="number">
-                                    <label for="number-crew">Number of people for this pick up?</label>
+                                    <label for="number-crew">Number of passengers?</label>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="input-field col s12">
-                                    <input id="date-ja" name="dateJa"  type="date" value =<%= data.u_date %> >date
+                                    <input id="date-ja" name="dateJa"  type="date" value ="<%= data.u_date %>" >date
                                     <label for="date-ja"></label>
                                 </div>
                             </div>
