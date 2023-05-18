@@ -75,50 +75,31 @@ router.get("/employee/new", function (req, res) {
   res.render("new");
 });
 router.get("/employee/search", function (req, res) {
-
-  res.render("search",{employee:""});
+  res.render("search", { employee: "" });
 });
 router.get("/employee", function (req, res) {
-  let searchQuery = {name: req.query.name};
-  
-  Employee.findOne(searchQuery).then(employee =>{
+  let searchQuery = { name: req.query.name };
 
-    res.render("search", {employee:employee});
-
-  }).catch(err =>{
-    res.json("error"+err);
-  })
+  Employee.findOne(searchQuery)
+    .then((employee) => {
+      res.render("search", { employee: employee });
+    })
+    .catch((err) => {
+      res.json("error" + err);
+    });
 });
 
-router.get("/edit/:id", function(req, res){
-  let id= req.params.id;
-let searchQuery = {_id: id}
-Employee.findOne(searchQuery).then(employee =>{
-  res.render("edit", {employee:employee});
-}).catch(err =>{
-  res.json("error" + err);
+router.get("/edit/:id", function (req, res) {
+  let id = req.params.id;
+  let searchQuery = { _id: id };
+  Employee.findOne(searchQuery)
+    .then((employee) => {
+      res.render("edit", { employee: employee });
+    })
+    .catch((err) => {
+      res.json("error" + err);
+    });
 });
-});
-router.put("/edit/:id", function(req, res){
-  let id= req.params.id;
-let searchQuery = {_id: id};
-let updateObj={name:req.body.name,
-  designation:req.body.designation,
-  salary:req.body.salary
-
-
-}
-Employee.updateOne(searchQuery, {$set:{name:req.body.name,
-  designation:req.body.designation,
-  salary:req.body.salary}}).then(employee =>{
-  res.redirect("/index");
-}).catch(err =>{
-  res.json("error" + err);
-});
-});
-
-
-
 
 router.get("/", function (req, res) {
   res.render("home");
@@ -164,19 +145,22 @@ router.get("/driver", function (req, res) {
 router.get("/home1", async function (req, res) {
   let user = await User.findById(req.user.id);
   let data = user;
-  console.log(user);
+
   loggedUser = user;
   if (user.completed === true) {
     if (loggedUser.u_role === "seafarer") {
-
-      const foundPickups = await Pickup.find({ crew_email: loggedUser.username });
+      const foundPickups = await Pickup.find({
+        crew_email: loggedUser.username,
+      });
       if (foundPickups[0] != undefined) {
-        console.log(foundPickups);
-    
-        res.render("crew_pickups", { data: {user:loggedUser , pickups: foundPickups}});
+        res.render("crew_pickups", {
+          data: { user: loggedUser, pickups: foundPickups },
+        });
+      } else {
+        res.render("crew_pickups", {
+          data: { user: loggedUser, pickups: foundPickups },
+        });
       }
-   
-      
     } else if (loggedUser.u_role === "driver") {
       res.render("driver", { data: loggedUser });
     } else if (loggedUser.u_role === "dispatcher") {
@@ -346,16 +330,16 @@ router.post("/update_profile", async function (req, res) {
   };
 
   if (loggedUser.u_role === "seafarer") {
-
-
-
     const foundPickups = await Pickup.find({ crew_email: loggedUser.username });
     if (foundPickups[0] != undefined) {
       console.log(foundPickups);
-  
-      res.render("crew_pickups", { data: {user:loggedUser , pickups: foundPickups}});
-    } else{
-      res.json("no pick ups for this user yet");
+
+      res.render("crew_pickups", {
+        data: { user: loggedUser, pickups: foundPickups },
+      });
+    } else {
+      // res.json("no pick ups for this user yet");
+      res.render("crew_pickups", { data: { user: loggedUser, pickups: [] } });
     }
   } else if (loggedUser.u_role === "driver") {
     res.render("driver", { data: loggedUser });
@@ -414,7 +398,9 @@ router.post("/crew-pickups", async function (req, res) {
   if (foundPickups[0] != undefined) {
     console.log(foundPickups);
 
-    res.render("crew_pickups", { data: {user:loggedUser , pickups: foundPickups}});
+    res.render("crew_pickups", {
+      data: { user: loggedUser, pickups: foundPickups },
+    });
   }
 });
 
@@ -441,10 +427,10 @@ router.post("/login", function (req, res) {
           if (!user) {
             console.log("no user");
 
-            // res.json({
-            //   success: false,
-            //   message: "username or password incorrect",
-            // });
+            res.json({
+              success: false,
+              message: "username or password incorrect",
+            });
           } else {
             const token = jwt.sign(
               { userId: user._id, username: user.username },
@@ -554,5 +540,47 @@ router.post("/pickup", async function (req, res) {
     res.render("confirmation", { data: data });
   }
 });
+
+// PUT routes start here
+
+router.put("/edit/:id", function (req, res) {
+  let id = req.params.id;
+  let searchQuery = { _id: id };
+  let updateObj = {
+    name: req.body.name,
+    designation: req.body.designation,
+    salary: req.body.salary,
+  };
+  Pickup.updateOne(searchQuery, {
+    $set: {
+      name: req.body.name,
+      designation: req.body.designation,
+      salary: req.body.salary,
+    },
+  })
+    .then((employee) => {
+      res.redirect("/");
+    })
+    .catch((err) => {
+      res.json("error" + err);
+    });
+});
+// PUT routes end here
+// DELETE routes start here
+
+router.delete("/delete/:id", function (req, res) {
+  let id = req.params.id;
+  let searchQuery = { _id: id };
+
+  Pickup.deleteOne(searchQuery)
+    .then((employee) => {
+      res.redirect("/");
+    })
+    .catch((err) => {
+      res.json("error" + err);
+    });
+});
+// DELETE routes end here
+
 // Export routes for server.js to use.
 module.exports = router;
