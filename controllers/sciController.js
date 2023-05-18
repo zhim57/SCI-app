@@ -488,9 +488,21 @@ router.post("/login", function (req, res) {
 });
 
 router.post("/pickup", async function (req, res) {
+let driver="";
+  let time_ja = req.body.time_ja
+  if (time_ja > "21:01:00" || time_ja < "09:29:00")  {
+    
+return res.json(" your pick up cannot be set as we work Mon -Fri 0930-2100");
+  } else if (time_ja > "09:29:00" && time_ja < "14:30:00"){
+    driver ="William";
+  }
+   else if (time_ja < "21:00:00" && time_ja > "14:30:00"){
+    driver ="Aileen";
+  }
   const newPickup = new Pickup({
     crew_full_name: req.body.crew,
     crew_email: req.body.email,
+    driver:driver,
     vessel: req.body.vessel,
     port_location: req.body.portselect,
     crew_whatsApp: req.body.whatsApp_number,
@@ -559,7 +571,7 @@ router.put("/edit/:id", function (req, res) {
     },
   })
     .then((employee) => {
-      res.redirect("/");
+      res.redirect("/home1");
     })
     .catch((err) => {
       res.json("error" + err);
@@ -574,7 +586,7 @@ router.delete("/delete/:id", function (req, res) {
 
   Pickup.deleteOne(searchQuery)
     .then((employee) => {
-      res.redirect("/");
+      res.redirect("/home1");
     })
     .catch((err) => {
       res.json("error" + err);
