@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const express = require("express");
 const router = express.Router();
 // var md5 = require("md5");
+const flash = require("connect-flash");
 const session = require("express-session");
 var passport = require("passport");
 dotenv.config({ path: "./.env" });
@@ -586,10 +587,17 @@ router.delete("/delete/:id", function (req, res) {
 
   Pickup.deleteOne(searchQuery)
     .then((employee) => {
+      let dateJa =  "";
+      var d = new Date();
+      dateJa +=
+        +(d.getHours() + 1) + ":" + d.getMinutes() + ":" + d.getSeconds();
+      req.flash("success_msg", "Pick up deleted Successfully :"+ dateJa);
       res.redirect("/home1");
+
     })
     .catch((err) => {
       res.json("error" + err);
+      req.flash("error_msg", "Error "+ dateJ +" " +err);
     });
 });
 // DELETE routes end here
